@@ -6,6 +6,9 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.annotation.web.servlet.configuration.EnableWebMvcSecurity;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.provisioning.JdbcUserDetailsManager;
 
 @Configuration
 @EnableWebMvcSecurity
@@ -27,10 +30,27 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Autowired
+    private DataSource datasource;
+    
+    @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        //
+    	JdbcUserDetailsManager userDetailsService = new JdbcUserDetailsManager();
+        userDetailsService.setDataSource(datasource);
+        PasswordEncoder encoder = new BCryptPasswordEncoder();
+ 
+        auth.userDetailsService(userDetailsService).passwordEncoder(encoder);
+        auth.jdbcAuthentication().dataSource(datasource);
+ 
+        if(!userDetailsService.userExists("admin")) {
+            List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
+            authorities.add(new SimpleGrantedAuthority("ADMIN"));
+            User userDetails = new User("admin", encoder.encode("admin"), authorities);
+ 
+            userDetailsService.createUser(userDetails);
+        }
     	//
-    	//TUTAJ SEBASTIAN ZBUDUJ BAZE DANYCH!!!
+    	//
+    	//cos nie dziala ;o
     	//
     	//
     	auth
@@ -38,4 +58,5 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .withUser("admin").password("admin").roles("ADMIN");
     	
     }
+    
 }
