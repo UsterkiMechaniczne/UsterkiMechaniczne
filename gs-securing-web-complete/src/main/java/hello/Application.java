@@ -1,5 +1,6 @@
 package hello;
 
+import org.apache.tomcat.jdbc.pool.DataSource;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -28,7 +29,7 @@ public class Application {
     
     @Bean
     public DataSource datasource() {
-        org.apache.tomcat.jdbc.pool.DataSource ds = new org.apache.tomcat.jdbc.pool.DataSource();
+        DataSource ds = new DataSource();
         ds.setDriverClassName(databaseDriverClassName);
         ds.setUrl(datasourceUrl);
         ds.setUsername(databaseUsername);
