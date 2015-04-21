@@ -1,6 +1,9 @@
 package hello;
 
 
+import java.sql.DatabaseMetaData;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,8 +45,29 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-    	JdbcUserDetailsManager userDetailsService = new JdbcUserDetailsManager();
     	
+    	DatabaseMetaData dbm = datasource.getConnection().getMetaData();
+    	ResultSet tables = dbm.getTables(null, null, "users", null);
+    	if (!tables.next()) {
+    	  System.out.println("Tworze tabele users");
+    	 
+    	  Statement stmt = null;
+    	    String query = "create table users (    username varchar(50) not null primary key, password varchar(255) not null, enabled boolean not null); "
+    	    		+ " create table authorities (  username varchar(50) not null,    authority varchar(50) not null,    foreign key (username) references users (username));";
+    	       	    
+    	     stmt = datasource.getConnection().createStatement();
+    	     stmt.executeUpdate(query);
+    	     stmt.close();
+    	     System.out.println("Utworzylem tabele");
+    	}
+    	else
+    	{
+    		
+    		System.out.println("Tabela users istnieje");
+    	}
+
+    	JdbcUserDetailsManager userDetailsService = new JdbcUserDetailsManager();
+    
         userDetailsService.setDataSource(datasource);
         PasswordEncoder encoder = new BCryptPasswordEncoder();
  
@@ -51,21 +75,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         auth.jdbcAuthentication().dataSource(datasource);
  
         if(!userDetailsService.userExists("admin")) {
-            List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
+            System.out.println("Tworze konto admin:admin");
+        	List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
             authorities.add(new SimpleGrantedAuthority("ADMIN"));
             User userDetails = new User("admin", encoder.encode("admin"), authorities);
  
             userDetailsService.createUser(userDetails);
         }
-    	//
-    	//
-    	//cos nie dziala ;o
-    	//
-    	//
-    	auth
-            .inMemoryAuthentication()
-                .withUser("admin").password("admin").roles("ADMIN");
-    	
     }
-    
 }
