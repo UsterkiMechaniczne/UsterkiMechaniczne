@@ -53,7 +53,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     	 
     	  Statement stmt = null;
     	    String query = "create table users (    username varchar(50) not null primary key, password varchar(255) not null, enabled boolean not null); "
-    	    		+ " create table authorities (  username varchar(50) not null,    authority varchar(50) not null,    foreign key (username) references users (username));";
+    	    		+ " create table authorities (  username varchar(50) not null,    authority varchar(50) not null,    foreign key (username) references users (username) ON DELETE CASCADE);";
     	       	    
     	     stmt = datasource.getConnection().createStatement();
     	     stmt.executeUpdate(query);
@@ -61,10 +61,28 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     	     System.out.println("Utworzylem tabele");
     	}
     	else
-    	{
-    		
+    	{	
     		System.out.println("Tabela users istnieje");
     	}
+    	tables = dbm.getTables(null, null, "clients", null);
+    	if (!tables.next()) {
+      	  System.out.println("Tworze tabele clients oraz ??? xD");
+      	 
+      	  Statement stmt = null;
+      	    String query = "create table clients (  first_name varchar(50) not null, last_name varchar(50) not null, number_plate varchar(15) not null primary key); ";
+      	    String query2 = "create table tasks ( id int primary key, created_by varchar(50) not null references users(username) ON DELETE CASCADE, number_plate varchar(15) not null references clients(number_plate) ON DELETE CASCADE, description text not null);";
+      	    stmt = datasource.getConnection().createStatement();
+      	    stmt.executeUpdate(query);
+      	    stmt.close();
+      	    stmt = datasource.getConnection().createStatement();
+    	    stmt.executeUpdate(query2);
+    	    stmt.close();
+      	    System.out.println("Utworzylem tabele clients i tasks");
+      	}
+      	else
+      	{	
+      		System.out.println("Tabela users istnieje");
+      	}
 
     	JdbcUserDetailsManager userDetailsService = new JdbcUserDetailsManager();
     
