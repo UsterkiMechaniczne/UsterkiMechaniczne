@@ -26,6 +26,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
+            .csrf().disable() //wyłączenie ochrony przed atakami CSFR
             .authorizeRequests()
                 .antMatchers("/", "/login").permitAll()
                 .anyRequest().authenticated()
@@ -43,7 +44,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private DataSource datasource;
 
     
-    private void insertUserIntoDatabase(User user) throws SQLException{
+    public void insertUserIntoDatabase(User user) throws SQLException{
     	
   	  Statement stmt = null;
 	    String query = "insert into users (first_name, last_name, username, password, enabled) values ('"+user.getFirstName()+"','"+user.getLastName()+"','"+user.getUsername()+"','"+user.getPassword()+"','"+user.isEnabled()+"'); "

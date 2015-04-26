@@ -20,7 +20,7 @@
 	<div class="row clearfix">
 		<div class="col-md-12 column">
 		
-		<form action="user/create" method="post">
+		<form action="/user_create" method="post">
 			<table class="table">
 				<tbody>
 					<tr>
@@ -35,37 +35,37 @@
 					</tr>
 					<tr class="success">
 						<td>
-						<div><label> Login pracownika: <input type="text" name="username"/> </label></div>
+						<div><label> Login pracownika: <input type="text" name="username"></input></label></div>
 						</td>
 					</tr>
 					<tr class="warning">
 						<td>
-					    <div><label> Hasło pracownika: <input type="password" name="password"/> </label></div>
+					    <div><label> Hasło pracownika: <input type="password" name="password"></input></label></div>
 						</td>
 					</tr>
 					<tr class="danger">
 						<td>
-								  <label><input type="radio" name="optradio"/>Sekretarka</label>
-								  <label><input type="radio" name="optradio"/>Mechanik</label>
-								  <label><input type="radio" name="optradio"/>Ksiegowa</label>
+								  <label><input type="radio" name="authority" value="Sekretarka">Sekretarka</input></label>
+								  <label><input type="radio" name="authority" value="Mechanik">Mechanik</input></label>
+								  <label><input type="radio" name="authority" value="Księgowa">Ksiegowa</input></label>
 						</td>
 					</tr>
 				</tbody>
 			</table>
+			<div class="col-md-12 column">
+					 <button type="submit" class="btn btn-success">Dodaj nowego pracownika</button>
+			</div>
+				
 			</form>
 			
 			<div class="row clearfix">
-				<div class="col-md-6 column">
+				<div class="col-md-12 column">
 					 <a href="main" style="text-decoration: none"><button type="button" class="btn btn-danger">Anuluj dodawania pracownika</button></a>
-				</div>
-				<div class="col-md-6 column">
-					 <button type="button" class="btn btn-success">Dodaj nowego pracownika</button>
 				</div>
 			</div>
 		</div>
 	</div>
 </div>
-        
         
     </body>
 </html>
