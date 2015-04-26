@@ -25,7 +25,7 @@ public class UserController {
 	@Autowired
 	WebSecurityConfig ob;
 	
-	
+
     @RequestMapping(value = "/user_create", method = RequestMethod.POST)
     public  String showHelloPage(
     		@RequestParam("first_name") String first_name,
