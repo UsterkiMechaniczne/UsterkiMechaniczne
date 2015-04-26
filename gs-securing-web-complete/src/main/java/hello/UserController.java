@@ -8,10 +8,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @Controller
-@RequestMapping(value="/user")
+@RequestMapping(value="/")
 public class UserController {
 
-    @RequestMapping(value = "/create", method = RequestMethod.GET)
+    @RequestMapping(value = "/create_user", method = RequestMethod.GET)
     public  String showHelloPage(Model model) {
 
         return "/main";

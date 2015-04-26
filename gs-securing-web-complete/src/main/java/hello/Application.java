@@ -9,9 +9,9 @@ import org.springframework.beans.factory.annotation.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 
-//@SpringBootApplication
+@SpringBootApplication
 @ComponentScan
-@EnableAutoConfiguration
+//@EnableAutoConfiguration
 @ConfigurationProperties(locations = "classpath:application.properties, classpath:/")
 public class Application {
 
