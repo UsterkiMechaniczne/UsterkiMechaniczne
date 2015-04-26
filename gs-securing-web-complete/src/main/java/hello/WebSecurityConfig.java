@@ -107,12 +107,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         auth.jdbcAuthentication().dataSource(datasource);
  
         if(!userDetailsService.userExists("admin")) {
-            //System.out.println("Tworze konto admin:admin");
 
-            User userDetails = new User("jan", "kowalski", "admin", encoder.encode("admin"), new SimpleGrantedAuthority("MISZTSZ"));
+            User userDetails = new User("jan", "kowalski", "admin", encoder.encode("admin"), new SimpleGrantedAuthority("Kierownik"));
             insertUserIntoDatabase(userDetails);
             
-            //insertUserIntoDatabase(new User("paweł", "beznazwiskowy", "klient", encoder.encode("klient"), new SimpleGrantedAuthority("BRAK")));
+          
         }
     }
 }

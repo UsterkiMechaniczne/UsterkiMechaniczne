@@ -2,13 +2,17 @@ package hello;
 
 import org.apache.tomcat.jdbc.pool.DataSource;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 
-@SpringBootApplication
-@ConfigurationProperties(locations = "classpath:application.properties")
+//@SpringBootApplication
+@ComponentScan
+@EnableAutoConfiguration
+@ConfigurationProperties(locations = "classpath:application.properties, classpath:/")
 public class Application {
 
 	@Value("${spring.datasource.driverClassName}")
