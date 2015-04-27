@@ -1,11 +1,14 @@
 package hello;
 
 import java.sql.SQLException;
+import java.util.Collection;
 
 import model.User;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -50,6 +53,22 @@ public class UserController {
     	ob.insertUserIntoDatabase(userDetails);
     	
         return "/main";
+    }
+    
+    @RequestMapping(value = "/main", method = RequestMethod.GET)
+    public  String showMainPage(){
+    	
+    	String auth = SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString().replace("[", "").replace("]", "");
+    	if( auth.equals("Kierownik"))
+    		return "redirect:/director";
+    	else if (auth.equals("Księgowa"))
+    		return "redirect:/accountant";
+    	else if (auth.equals("Mechanik"))
+    		return "redirect:/mechanic";
+    	else if (auth.equals("Sekretarka"))
+    		return "redirect:/secretary";
+    	
+        return "redirect:/not_found";
     }
 
 }
