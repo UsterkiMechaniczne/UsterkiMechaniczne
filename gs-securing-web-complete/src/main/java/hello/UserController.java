@@ -40,8 +40,11 @@ public class UserController {
     	System.out.println("jestem i odebrałem " + password);
     	System.out.println("jestem i odebrałem " + authority);
     	
-    	User userDetails = new User(first_name, last_name, username, new BCryptPasswordEncoder().encode(password), new SimpleGrantedAuthority(authority));
+    	if(ob.userExists(username)){
+    		return "redirect:/add_account?u=exist";
+    	}
     	
+    	User userDetails = new User(first_name, last_name, username, new BCryptPasswordEncoder().encode(password), new SimpleGrantedAuthority(authority));
     	
     	//WebSecurityConfig ob = new WebSecurityConfig();
     	ob.insertUserIntoDatabase(userDetails);

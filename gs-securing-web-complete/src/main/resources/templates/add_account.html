@@ -18,6 +18,9 @@
 		</div>
 	</div>
 	<div class="row clearfix">
+		<div class="col-md-8 col-md-offset-2" th:if="${(param.u != null) and (param.u[0] == 'exist')}">
+			<p class="bg-danger" style= "font-size: 17px; text-align: center;">Taka nazwa użytkownika jest już zajęta.</p>
+		</div>
 		<div class="col-md-12 column">
 		
 		<form action="/user_create" method="post">

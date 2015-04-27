@@ -43,6 +43,20 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private DataSource datasource;
 
+    public boolean userExists(String username) throws SQLException{
+    	
+    	Statement stmt = null;
+    	String query = "select * from users where username = '" + username + "'";
+	       	 
+    	boolean exists = false;
+		stmt = datasource.getConnection().createStatement();
+		ResultSet rs = stmt.executeQuery(query);
+		if(rs.next())
+			exists = true;
+		stmt.close();
+		return exists;
+    }
+    
     
     public void insertUserIntoDatabase(User user) throws SQLException{
     	
