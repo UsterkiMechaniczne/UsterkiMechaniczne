@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+    <head>
+        <meta name="Description" content="kalendarz dla aktorow" />
+  		<title>Calendar</title>
+        <link rel="stylesheet" href="css/bootstrap.min.css"/>
+		<link rel="stylesheet" href="css/bootstrap-theme.min.css"/>
+		<link rel="stylesheet" href="http://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+  		<script src="http://code.jquery.com/jquery-1.10.2.js"></script>
+  		<script src="http://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+		<script src="js/jquery-2.1.3.min.js"></script>
+		<script src="js/bootstrap.min.js"></script>
+        
+    </head>
+    <body>
+		<div id="datepicker"></div>
+		<style type="text/css">
+		.ui-datepicker {
+		position: absolute;
+   		left: 50%;
+   		top: 25%;
+   		transform: translateX(-50%);
+   		background: #333;
+   		color: #EEE;
+   		font-size: 25px;
+ 		}
+		</style> 
+		<script>
+		$( "#datepicker" ).datepicker();
+		/*
+		Text
+		$( ".selector" ).datepicker({
+  			currentText: "Now"
+		});
+	
+		// Getter
+		var currentText = $( ".selector" ).datepicker( "option", "currentText" );
+		// Setter
+		$( ".selector" ).datepicker( "option", "currentText", "Now" );
+		
+		Alt Field
+		$( ".selector" ).datepicker({
+			  altField: "#actualDate"
+		});
+
+		// Getter
+		var altField = $( ".selector" ).datepicker( "option", "altField" );
+			 
+		// Setter
+		$( ".selector" ).datepicker( "option", "altField", "#actualDate" );
+		
+		
+		onSelect
+		The function receives the selected date as text and the datepicker instance as parameters.
+		this refers to the associated input field.
+		*/
+		</script>
+        
+    </body>
+</html>
