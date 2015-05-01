@@ -1,22 +1,25 @@
-<!DOCTYPE html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
     <head>
-        <title>Login panel</title>
+        <title>Car Repair </title>
+		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" >
     </head>
     <body>
-        <div th:if="${param.error}">
-            Niepoprawna nazwa użytownika lub hasło!
+	<body background="tlo.jpg" >
+        <div th:if="${param.error}" >
+            <font color="red">Niepoprawna nazwa użytownika lub hasło!</font>
         </div>
         <div th:if="${param.logout}">
-            Zostałeś wylogowany.
+            <font color="red">Zostałeś wylogowany.</font>
         </div>
-        <h1>Witaj w aplikacji serwisu samochodowego "Super Nazwa!"</h1>
-        
-        <form th:action="@{/login}" method="post">
-            <div><label> Podaj login : <input type="text" name="username"/> </label></div>
-            <div><label> Podaj hasło: <input type="password" name="password"/> </label></div>
-            <div><input type="submit" value="Zaloguj się"/></div>
+        <h1 align="center" vertical-align="middle"><font color="maroon"><b>Witaj w Car Repair. </b></font></h1>
+		<h4 align="center" vertical-align="middle"><font color="maroon"><b></b><br /> Aby kontunować, zaloguj się.</font></h4>
+       
+        <form th:action="@{/login}" method="post" align="center">
+            <div><label align="right"> <font color="maroon"><b>Podaj login :</b> </font><input type="text" name="username"/> </label></div>
+            <div><label> <font color="maroon"> <b>Podaj hasło: </b></font> <input type="password" name="password"/> </label></div>
+            <div align="center"><input type="submit" value="Zaloguj"/></div>
         </form>
     </body>
 </html>
