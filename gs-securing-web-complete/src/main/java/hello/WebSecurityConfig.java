@@ -29,6 +29,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             .csrf().disable() //wyłączenie ochrony przed atakami CSFR
             .authorizeRequests()
                 .antMatchers("/", "/login").permitAll()
+                .antMatchers("/resources/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
             .formLogin()
