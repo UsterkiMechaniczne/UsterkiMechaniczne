@@ -1,0 +1,28 @@
+.ui-datepicker {
+			position: absolute;
+	   		left: 50%;
+	   		top: 25%;
+	   		transform: translateX(-50%);
+	   		background: #333;
+	   		color: #EEE;
+	   		font-size: 25px;
+ 		}
+.ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default{
+		 	background-color : #74DF00
+}
+
+.Highlighted a{
+   background-color : #FE2E2E !important;
+   background-image :none !important;
+   color: White !important;
+   font-weight:bold !important;
+}
+
+
+#datepicker-container{
+  text-align:center;
+}
+#ui-datepicker-div{
+  margin:0 30%;
+}
+ 
