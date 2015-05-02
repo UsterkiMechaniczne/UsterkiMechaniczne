@@ -2,6 +2,7 @@ package hello;
 
 import java.sql.SQLException;
 import java.util.Collection;
+import java.util.List;
 
 import model.User;
 
@@ -28,7 +29,13 @@ public class UserController {
 	@Autowired
 	WebSecurityConfig ob;
 	
-
+	@RequestMapping(value = "/user_list", method = RequestMethod.GET)
+    public @ResponseBody List<String> listOfUsers() throws SQLException {	
+        return ob.listOfUsers();
+    }
+	
+    
+	//Dodawanie uzytkownika do bazy calendar, po przyjeciu zgloszenia przez director
     @RequestMapping(value = "/user_create", method = RequestMethod.POST)
     public  String showHelloPage(
     		@RequestParam("first_name") String first_name,
@@ -36,12 +43,6 @@ public class UserController {
     		@RequestParam("last_name") String last_name,
     		@RequestParam("password") String password,
     		@RequestParam("authority") String authority) throws SQLException {
-    	
-    	System.out.println("jestem i odebrałem " + first_name);
-    	System.out.println("jestem i odebrałem " + last_name);
-    	System.out.println("jestem i odebrałem " + username);
-    	System.out.println("jestem i odebrałem " + password);
-    	System.out.println("jestem i odebrałem " + authority);
     	
     	if(ob.userExists(username)){
     		return "redirect:/add_account?u=exist";
@@ -52,8 +53,10 @@ public class UserController {
     	//WebSecurityConfig ob = new WebSecurityConfig();
     	ob.insertUserIntoDatabase(userDetails);
     	
-        return "/main";
+        return "/director";
     }
+    
+    
     
     @RequestMapping(value = "/main", method = RequestMethod.GET)
     public  String showMainPage(){
