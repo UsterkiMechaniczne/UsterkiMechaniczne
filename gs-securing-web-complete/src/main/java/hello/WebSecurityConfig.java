@@ -76,9 +76,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		return exists;
     }
     
+    //pobiera liste dni wolnych
     public List<Date> getCalendarOfUser(String username) throws SQLException{
     	List<Date> calendar = new LinkedList<>();
-    	String query = "select day from calendar where username='"+username+"';";
+    	String query = "select day from calendar where work_day = false and username='"+username+"';";
     	
     	System.out.println(query);
     	Statement stmt = datasource.getConnection().createStatement();
@@ -93,8 +94,18 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     
     	String query = "insert into calendar values (' " + day + "',"+ work_day + ",'" + username+"'); " ;
     	
-    	System.out.println(query);
+    	String fun = "select day,work_day from calendar where username='"+ username +"' AND day='" + day +"';";
     	Statement stmt = datasource.getConnection().createStatement();
+		ResultSet rs = stmt.executeQuery(fun);
+    	
+    	if(rs.next()){
+    		
+    		query = "update calendar set work_day= "+(!rs.getBoolean(2))+ " where username='"+ username +"' AND day='" + day +"';";
+    	}
+    	stmt.close();
+    	
+    	System.out.println(query);
+    	stmt = datasource.getConnection().createStatement();
         stmt.executeUpdate(query);
         stmt.close();
     }

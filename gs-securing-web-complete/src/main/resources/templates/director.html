@@ -36,6 +36,7 @@
 							$.each(data,function(i,value){
 								SelectedDates[new Date(value + " 00:00:00")] = new Date(value + " 00:00:00");
 							});
+							$('#datepicker').datepicker("refresh");
 						});
 					}
 				//	SelectedDates[new Date('2015-05-05 00:00:00')] = new Date('2015-05-05 00:00:00');
@@ -57,27 +58,38 @@
 						
 						$.post('/calendar_create', parameters, function(response){
 							console.log(response);
+							refreshCalendarOfUser($('#listOfUsers').val());
 						});			
 					}
 					
 					$( "#datepicker" ).datepicker({
 						buttonImage: 'kalendarz.png',
 				        buttonImageOnly: true,
+				        firstDay: 1, //poniedzialek to pierwszy dzien tygodnia,
+				        dayNamesMin: ["Nd", "Pn", "Wt", "Śr", "Cz", "Pt", "So" ],
+				        monthNames: [ "Styczeń", "Luty", "Marzec", "Kwiecień", "Maj", "Czerwiec", "Lipiec", "Sierpień", "Wrzesień", "Październik", "Listopad", "Grudzień" ],
 				        showOn: 'both',
 				        dateFormat: "yy-mm-dd",
 						onSelect : function(){
 							//po kliknieciu zapisz do bazy
+							
 							sendRequestForCalendarCreation($(this).prop('value'),false,$('#listOfUsers').val() );
-							refreshCalendarOfUser($('#listOfUsers').val());
+							$('#datepicker').datepicker('setDate');
+							 $(this).data('datepicker').inline = true;
+							
 						},
 						beforeShowDay: function(date) {
-				            var Highlight = SelectedDates[date];
+				            
+							var Highlight = SelectedDates[date];
 				            if (Highlight) {
 				            	return [true, "Highlighted", 'Dzień wolny.'];
 				            }
 				            else {
 				                return [true, '', ''];
 				            }
+				        },
+				        onClose: function() {
+				            $(this).data('datepicker').inline = false;
 				        }
 					});
 			
