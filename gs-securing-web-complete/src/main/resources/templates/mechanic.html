@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
-    <head>
-        <title>Konto użytkownika</title>
+<head>
+
         <link rel="stylesheet" href="css/bootstrap.min.css"/>
 		<link rel="stylesheet" href="css/bootstrap-theme.min.css"/>
 		<link rel="stylesheet" href="jquery/jquery-ui.css"/>
@@ -11,13 +11,29 @@
 		<script src="js/bootstrap.min.js"></script>
         
         <link rel="stylesheet" type="text/css" href="css/style.css"/>
-        
-    </head>
-    <body>
-        <h1 th:inline="text">Witaj [[${#httpServletRequest.remoteUser}]]!</h1>
+
+</head>
+
+<body>
+
+<h1 th:inline="text">Witaj [[${#httpServletRequest.remoteUser}]]!</h1>
         <h2 th:inline="text">Jesteś zalogowany jako: [[${#httpServletRequest.userPrincipal.authorities[0]}]]</h2>
-     
-     <!-- ....................................... Kalendarz!!!........................................-->   
+
+
+
+
+<div class="container">
+	<div class="row clearfix">
+		<div class="col-md-12 column">
+			<h3 class="text-left text-primary" th:inline="text">
+				Panel Mechanika: [[${#httpServletRequest.remoteUser}]]
+			</h3>
+		</div>
+	</div>
+	
+	
+	        
+<!-- ....................................... Kalendarz!!!........................................-->   
 		<h4>Kliknij na kalendarz, aby zobaczyć swoje dni pracy
 		<input type="hidden" id="datepicker" />
 		</h4>
@@ -62,11 +78,62 @@
 			
 		</script>
 <!--..............................................................................................-->  
-     
-     
+	
+	
         <form th:action="@{/logout}" method="post">
             <input type="submit" value="Wyloguj"/>
         </form>
-        
-    </body>
+	
+	<div class="row clearfix">
+		<div class="col-md-12 column">
+			<h3>
+				Zgłoś wykonane zadanie.
+			</h3>
+			<form class="form-horizontal" role="form">
+				<div class="form-group">
+					 <label for="inputEmail3" class="col-sm-2 control-label">Cena usługi</label>
+					<div class="col-sm-10">
+						<input type="text" class="form-control" id="inputEmail3"/>
+					</div>
+				</div>
+				<div class="form-group">
+					 <label for="inputEmail3" class="col-sm-2 control-label">Cena części</label>
+					<div class="col-sm-10">
+						<input type="text" class="form-control" id="inputEmail3"/>
+					</div>
+				</div>
+				<div class="form-group">
+					 <label for="inputEmail3" class="col-sm-2 control-label">Opis wykonanej usługi</label>
+					<div class="col-sm-10">
+						<input type="text" class="form-control" id="inputEmail3"/>
+					</div>
+				</div>
+				<div class="form-group">
+					 <label for="inputEmail3" class="col-sm-2 control-label">Uwagi</label>
+					<div class="col-sm-10">
+						<input type="text" class="form-control" id="inputEmail3"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-offset-2 col-sm-10">
+						<div class="checkbox">
+							 <label><input type="checkbox"/> Zadanie zostało wykonane</label>
+						</div>
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-offset-2 col-sm-10">
+						 <button type="submit" class="btn btn-default">Prześlij</button>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+	
+	
+	
+	
+	
+</div>
+</body>
 </html>
