@@ -44,6 +44,13 @@ public class UserController {
     		@RequestParam("password") String password,
     		@RequestParam("authority") String authority) throws SQLException {
     	
+    	if(username == "")
+    		return "redirect:/add_account?u=empty";
+    	
+    	if(authority == "") //to nie bedzie osiagalne dopoki jeste RequestParam... w sumie to nie ma sie co walic z taka walidacja bo uzytkownik tego nie moze wpisywac a jesli to zrobil to jest debilem... 
+    		return "redirect:/add_account?u=authority";
+    	
+    	
     	if(ob.userExists(username)){
     		return "redirect:/add_account?u=exist";
     	}
@@ -73,5 +80,64 @@ public class UserController {
     	
         return "redirect:/not_found";
     }
+    
+    
+    //nie wiem czy to ma byc w tym miejscu ale to tutaj zostawiam, inteligentnego prosze o przesuniecie i pouczenie gdzie to dawac ;o(tzw routing)
+    @RequestMapping(value = "/director", method = RequestMethod.GET)
+    public  String showDirectorPage(){
+    	
+    	String auth = SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString().replace("[", "").replace("]", "");
+    	if (auth.equals("Księgowa"))
+    		return "redirect:/accountant";
+    	else if (auth.equals("Mechanik"))
+    		return "redirect:/mechanic";
+    	else if (auth.equals("Sekretarka"))
+    		return "redirect:/secretary";
+    	
+        return null;
+    }
+    
+    @RequestMapping(value = "/accountant", method = RequestMethod.GET)
+    public  String showAccountantPage(){
+    	
+    	String auth = SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString().replace("[", "").replace("]", "");
+    	if( auth.equals("Kierownik"))
+    		return "redirect:/director";
+    	else if (auth.equals("Mechanik"))
+    		return "redirect:/mechanic";
+    	else if (auth.equals("Sekretarka"))
+    		return "redirect:/secretary";
+    	
+        return null;
+    }
+
+    @RequestMapping(value = "/mechanic", method = RequestMethod.GET)
+    public  String showMechanicPage(){
+    	
+    	String auth = SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString().replace("[", "").replace("]", "");
+    	if( auth.equals("Kierownik"))
+    		return "redirect:/director";
+    	else if (auth.equals("Księgowa"))
+    		return "redirect:/accountant";
+    	else if (auth.equals("Sekretarka"))
+    		return "redirect:/secretary";
+    	
+        return null;
+    }
+
+    @RequestMapping(value = "/secretary", method = RequestMethod.GET)
+    public  String showSecretaryPage(){
+    	
+    	String auth = SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString().replace("[", "").replace("]", "");
+    	if( auth.equals("Kierownik"))
+    		return "redirect:/director";
+    	else if (auth.equals("Księgowa"))
+    		return "redirect:/accountant";
+    	else if (auth.equals("Mechanik"))
+    		return "redirect:/mechanic";
+    	
+        return null;
+    }
+
 
 }

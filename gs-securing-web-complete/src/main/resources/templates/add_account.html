@@ -18,8 +18,16 @@
 		</div>
 	</div>
 	<div class="row clearfix">
-		<div class="col-md-8 col-md-offset-2" th:if="${(param.u != null) and (param.u[0] == 'exist')}">
-			<p class="bg-danger" style= "font-size: 17px; text-align: center;">Taka nazwa użytkownika jest już zajęta.</p>
+		<div class="col-md-8 col-md-offset-2" th:if="${param.u != null}">
+			<p class="bg-danger" style= "font-size: 17px; text-align: center;" th:if="${param.u[0] == 'exist'}">
+				Taka nazwa użytkownika jest już zajęta.
+			</p>
+			<p class="bg-danger" style= "font-size: 17px; text-align: center;" th:if="${param.u[0] == 'empty'}">
+				Nazwa użytkownika nie może być pusta.
+			</p>
+			<p class="bg-danger" style= "font-size: 17px; text-align: center;" th:if="${param.u[0] == 'authority'}">
+				Musisz wybrać stanowisko pracownika.
+			</p>
 		</div>
 		<div class="col-md-12 column">
 		
