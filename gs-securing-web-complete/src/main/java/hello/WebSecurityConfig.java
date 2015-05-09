@@ -9,6 +9,7 @@ import java.sql.Statement;
 import java.util.LinkedList;
 import java.util.List;
 
+import model.Client;
 import model.User;
 
 import org.apache.tomcat.jdbc.pool.DataSource;
@@ -32,7 +33,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http
             .csrf().disable() //wyłączenie ochrony przed atakami CSFR
             .authorizeRequests()
-                .antMatchers("/css/**","/js/**").permitAll()
+                .antMatchers("/css/**","/js/**","/fonts/**").permitAll()
             	.antMatchers("/", "/login").permitAll()
                 .anyRequest().authenticated()
                 .and()
@@ -49,13 +50,28 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     public void configure(WebSecurity web) throws Exception {
       web
         .ignoring()
-           .antMatchers("/css/**","/js/**"); //wylaczenie zabezpieczen dla css/js
+           .antMatchers("/css/**","/js/**","/fonts/**"); //wylaczenie zabezpieczen dla css/js
     }
     
     @Autowired
     private DataSource datasource;
 
     
+    public List<Client> listOfClients() throws SQLException{
+    	List<Client> clients = new LinkedList<>();
+    	String query = "select first_name, last_name, number_plate from clients";
+      	
+		Statement stmt = datasource.getConnection().createStatement();
+		ResultSet rs = stmt.executeQuery(query);
+		while(rs.next()) {
+			clients.add( new Client(rs.getString(1), rs.getString(2), rs.getString(3))  );
+		
+		}
+			
+		stmt.close();
+		System.out.println(clients);
+    	return clients;
+    }
     
     public List<String> listOfUsers() throws SQLException{
     	List<String> users = new LinkedList<>();
@@ -75,6 +91,20 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     	
     	Statement stmt = null;
     	String query = "select * from users where username = '" + username + "'";
+	       	 
+    	boolean exists = false;
+		stmt = datasource.getConnection().createStatement();
+		ResultSet rs = stmt.executeQuery(query);
+		if(rs.next())
+			exists = true;
+		stmt.close();
+		return exists;
+    }
+    
+public boolean clientExists(String number_plate) throws SQLException{
+    	
+    	Statement stmt = null;
+    	String query = "select * from clients where number_plate = '" + number_plate + "'";
 	       	 
     	boolean exists = false;
 		stmt = datasource.getConnection().createStatement();
@@ -133,6 +163,18 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
      stmt.executeUpdate(query);
      stmt.close();
     }
+    
+
+	public void insertClientIntoDatabase(String first_name, String last_name, String number_plate) throws SQLException {
+		Statement stmt = null;
+	    
+		String query = "insert into clients values (' " + first_name + "', '"+ last_name + "' ,'" + number_plate+"'); " ;
+	    
+	 System.out.println(query);
+     stmt = datasource.getConnection().createStatement();
+     stmt.executeUpdate(query);
+     stmt.close();		
+	}
     
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -197,4 +239,5 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
           
         }
     }
+
 }

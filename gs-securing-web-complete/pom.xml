@@ -41,7 +41,12 @@
 	<version>9.3-1102-jdbc41</version>
 </dependency>
 
-        
+
+        <dependency>
+        	<groupId>org.testng</groupId>
+        	<artifactId>testng</artifactId>
+        	<version>6.8.8</version>
+        </dependency>
     </dependencies>
 
     <properties>

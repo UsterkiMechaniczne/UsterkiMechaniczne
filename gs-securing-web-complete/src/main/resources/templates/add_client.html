@@ -6,65 +6,52 @@
 		<link rel="stylesheet" href="css/bootstrap-theme.min.css"/>
 		<script src="js/jquery-2.1.3.min.js"></script>
 		<script src="js/bootstrap.min.js"></script>
-        <title>Add new employee panel </title>
+        <title>Add new client panel </title>
     </head>
     <body>
         <div class="container">
 	<div class="row clearfix">
 		<div class="col-md-12 column">
 			<h3 class="text-center">
-				Panel dodawania nowych pracowników
+				Panel dodawania nowych klientów
 			</h3>
 		</div>
 	</div>
 	<div class="row clearfix">
 		<div class="col-md-8 col-md-offset-2" th:if="${param.u != null}">
 			<p class="bg-danger" style= "font-size: 17px; text-align: center;" th:if="${param.u[0] == 'exist'}">
-				Taka nazwa użytkownika jest już zajęta.
+				Taki użytkownik (nr rejestracyjny) już istnieje.
 			</p>
 			<p class="bg-danger" style= "font-size: 17px; text-align: center;" th:if="${param.u[0] == 'empty'}">
-				Żadne z pól nie może być puste.
+				Żadne z pól nie może być puste
 			</p>
-			<p class="bg-danger" style= "font-size: 17px; text-align: center;" th:if="${param.u[0] == 'authority'}">
-				Musisz wybrać stanowisko pracownika.
-			</p>
+			
+			
 		</div>
 		<div class="col-md-12 column">
 		
-		<form action="/user_create" method="post">
+		<form action="/client_create" method="post">
 			<table class="table">
 				<tbody>
-					<tr>
-						<td>
-						<div><label> Imię pracownika :<input type="text" name="first_name"/> </label></div>
-						</td>
-					</tr>
 					<tr class="active">
 						<td>
-					    <div><label> Nazwisko pracownika: <input type="text" name="last_name"/> </label></div>
+					    <div><label> Imię klienta: <input type="text" name="first_name"/> </label></div>
 						</td>
 					</tr>
 					<tr class="success">
 						<td>
-						<div><label> Login pracownika: <input type="text" name="username"></input></label></div>
+						<div><label> Nazwisko kilenta: <input type="text" name="last_name"></input></label></div>
 						</td>
 					</tr>
 					<tr class="warning">
 						<td>
-					    <div><label> Hasło pracownika: <input type="password" name="password"></input></label></div>
-						</td>
-					</tr>
-					<tr class="danger">
-						<td>
-								  <label><input type="radio" name="authority" value="Sekretarka">Sekretarka</input></label>
-								  <label><input type="radio" name="authority" value="Mechanik">Mechanik</input></label>
-								  <label><input type="radio" name="authority" value="Księgowa">Ksiegowa</input></label>
+					    <div><label> Nr rejestracyjny pojazdu klienta: <input type="text" name="number_plate"></input></label></div>
 						</td>
 					</tr>
 				</tbody>
 			</table>
 			<div class="col-md-12 column">
-					 <button type="submit" class="btn btn-success">Dodaj nowego pracownika</button>
+					 <button type="submit" class="btn btn-success">Dodaj nowego klienta</button>
 			</div>
 				
 			</form>

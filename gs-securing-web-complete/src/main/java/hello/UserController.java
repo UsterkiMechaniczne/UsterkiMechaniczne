@@ -44,7 +44,7 @@ public class UserController {
     		@RequestParam("password") String password,
     		@RequestParam("authority") String authority) throws SQLException {
     	
-    	if(username == "")
+    	if(username == "" || first_name=="" || last_name=="" || password=="")
     		return "redirect:/add_account?u=empty";
     	
     	if(authority == "") //to nie bedzie osiagalne dopoki jeste RequestParam... w sumie to nie ma sie co walic z taka walidacja bo uzytkownik tego nie moze wpisywac a jesli to zrobil to jest debilem... 
