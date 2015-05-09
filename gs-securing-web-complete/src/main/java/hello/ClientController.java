@@ -51,7 +51,6 @@ public class ClientController {
     		return "redirect:/add_client?u=exist";
     	}
     	
-    	
     	    	ob.insertClientIntoDatabase(first_name, last_name, number_plate);
 
     	        return "/secretary";
