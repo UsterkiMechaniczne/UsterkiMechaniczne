@@ -2,6 +2,8 @@ package tests;
 
 import static org.junit.Assert.*;
 
+import java.sql.SQLException;
+
 import org.apache.tomcat.jdbc.pool.DataSource;
 import org.junit.Assert;
 import org.junit.Test;
@@ -61,10 +63,10 @@ public class Tests {
 	}
 	
 	@Test
-	public void Sprawdza_pobieranie_kalendarza_uzytkownika()
+	public void Sprawdza_pobieranie_kalendarza_uzytkownika() throws SQLException
 	{
 		CalendarController cal = new CalendarController();
-		@RequestParam("username") String username;
+		String username = "admin";
 		Assert.assertNotNull(cal.showHelloPage(username));
 	    //showHelloPage is not empty
 	}
