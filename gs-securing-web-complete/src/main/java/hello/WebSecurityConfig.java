@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.annotation.web.servlet.configuration.EnableWebMvcSecurity;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -31,7 +32,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http
             .csrf().disable() //wyłączenie ochrony przed atakami CSFR
             .authorizeRequests()
-                .antMatchers("/", "/login").permitAll()
+                .antMatchers("/css/**","/js/**").permitAll()
+            	.antMatchers("/", "/login").permitAll()
                 .anyRequest().authenticated()
                 .and()
             .formLogin()
@@ -43,6 +45,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll();
     }
 
+    @Override
+    public void configure(WebSecurity web) throws Exception {
+      web
+        .ignoring()
+           .antMatchers("/css/**","/js/**"); //wylaczenie zabezpieczen dla css/js
+    }
+    
     @Autowired
     private DataSource datasource;
 

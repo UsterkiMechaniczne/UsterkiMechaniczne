@@ -63,11 +63,16 @@ public class Tests {
 	}
 	
 	@Test
-	public void Sprawdza_pobieranie_kalendarza_uzytkownika() throws SQLException
+	public void Sprawdza_pobieranie_kalendarza_uzytkownika()
 	{
 		CalendarController cal = new CalendarController();
 		String username = "admin";
-		Assert.assertNotNull(cal.showHelloPage(username));
+		try {
+			Assert.assertNotNull(cal.showHelloPage(username));
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	    //showHelloPage is not empty
 	}
 

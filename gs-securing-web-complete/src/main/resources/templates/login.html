@@ -2,24 +2,38 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
     <head>
-        <title>Car Repair </title>
-		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+    	<title>Car Repair </title>
+    	<link rel="stylesheet" href="css/bootstrap.min.css"/>
+		<link rel="stylesheet" href="css/bootstrap-theme.min.css"/>
+		<script src="js/jquery-2.1.3.min.js"></script>
+		<script src="js/bootstrap.min.js"></script>
+		
+		<link rel="stylesheet" type="text/css" href="css/style.css"/>
     	
     </head>
 	<body >
-        <div th:if="${param.error}" >
-            <font color="red">Niepoprawna nazwa użytownika lub hasło!</font>
+		
+		<div th:if="${param.error}" >
+            <font face="verdana" color="red">Niepoprawna nazwa żytkownika lub hasło!</font>
         </div>
         <div th:if="${param.logout}">
-            <font color="red">Zostałeś wylogowany.</font>
+            <font face="verdana" color="red">Zostałeś wylogowany.</font>
         </div>
-        <h1 align="center" vertical-align="middle"><font color="maroon"><b>Witaj w Car Repair. </b></font></h1>
-		<h4 align="center" vertical-align="middle"><font color="maroon"><b></b><br /> Aby kontunować, zaloguj się.</font></h4>
-       
-        <form th:action="@{/login}" method="post" align="center">
-            <div><label align="right"> <font color="maroon"><b>Podaj login :</b> </font><input type="text" name="username"/> </label></div>
-            <div><label> <font color="maroon"> <b>Podaj hasło: </b></font> <input type="password" name="password"/> </label></div>
-            <div align="center"><input type="submit" value="Zaloguj"/></div>
-        </form>
-    </body>
+			
+<div class = "container">
+	<div class="wrapper">
+		<form th:action="@{/login}" method="post" name="Login_Form" class="form-signin">       
+		    <h3 class="form-signin-heading">Witaj w Car Repair!</h3>
+			  <hr class="colorgraph"/>
+			  
+			  <input type="text" class="form-control" name="username" placeholder="Login" required="" autofocus="" />
+			  <input type="password" class="form-control" name="password" placeholder="Hasło" required=""/>     		  
+			 
+			  <button class="btn btn-lg btn-primary btn-block"  name="submit" value="Login" type="submit">Zaloguj się</button>  			
+		</form>			
+	</div>
+</div>
+</body>
 </html>
+
+
