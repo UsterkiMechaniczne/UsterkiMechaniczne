@@ -149,7 +149,25 @@ public boolean clientExists(String number_plate) throws SQLException{
         stmt.close();
     }
     
-    
+    public void insertCalendarHoursIntoDatabase(String from, String to, String day, String username) throws SQLException{
+        
+    	String query = "insert into calendar_hours values ('" + from + "','"+ to + "','"+ day + "','" + username+"'); " ;
+    	
+    	String fun = "select * from calendar_hours where username='"+ username +"' AND day='" + day +"';";
+    	Statement stmt = datasource.getConnection().createStatement();
+		ResultSet rs = stmt.executeQuery(fun);
+    	
+    	if(rs.next()){
+    		
+    		query = "update calendar_hours set fromt='"+ from +"', tot='" + to +"' where username='"+ username +"' AND day='" + day +"';";
+    	}
+    	stmt.close();
+    	
+    	System.out.println(query);
+    	stmt = datasource.getConnection().createStatement();
+        stmt.executeUpdate(query);
+        stmt.close();
+    }
     
     public void insertUserIntoDatabase(User user) throws SQLException{
     	
@@ -206,6 +224,7 @@ public boolean clientExists(String number_plate) throws SQLException{
       	    String query = "create table clients (  first_name varchar(50) not null, last_name varchar(50) not null, number_plate varchar(15) not null primary key); ";
       	    String query2 = "create table tasks ( id int primary key, created_by varchar(50) not null references users(username) ON DELETE CASCADE, number_plate varchar(15) not null references clients(number_plate) ON DELETE CASCADE, description text not null);";
       	    String calendar = "create table calendar ( day date, work_day boolean, username varchar(50) not null REFERENCES users(username) );";
+      	    String calendar_hours = "create table calendar_hours ( fromT Time not null, toT Time not  null, day date not null, username varchar(50) not null REFERENCES users(username) );";
 
       	    stmt = datasource.getConnection().createStatement();
       	    stmt.executeUpdate(query);
@@ -216,11 +235,14 @@ public boolean clientExists(String number_plate) throws SQLException{
       	    stmt = datasource.getConnection().createStatement();
     	    stmt.executeUpdate(calendar);
     	    stmt.close();
-    	    System.out.println("Utworzylem tabele clients, tasks, calendar");
+    	    stmt = datasource.getConnection().createStatement();
+    	    stmt.executeUpdate(calendar_hours);
+    	    stmt.close();
+    	    System.out.println("Utworzylem tabele clients, tasks, calendar, calendar_hours");
       	}
       	else
       	{	
-      		System.out.println("Tabela clients, task, calendar istnieje");
+      		System.out.println("Tabela clients, task, calendar, etc. istnieje");
       	}
 
     	JdbcUserDetailsManager userDetailsService = new JdbcUserDetailsManager();
