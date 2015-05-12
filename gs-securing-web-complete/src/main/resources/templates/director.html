@@ -25,7 +25,117 @@
 		<div id="datepicker-container">
 				<div id="datepicker"></div>
 		</div>
+		<div style="position: absolute; top:0px; left:0px; background-color:#aaa; height: 100%; width: 100%; opacity: 0.5; display:none;" id="hours-background"></div>
+		<div style="position: absolute; top:20%; left:calc(50% - 200px); background-color:#fff; z-index:2; width: 400px; height: 230px; display:none;" id="hours-form-box">
+			<form id="hours-form">
+				<p>Podaj godziny pracy:</p>
+				<p>
+					Od: 
+					<select name="from" id="from" >
+						<option value="00:00:00">00:00</option>
+						<option value="01:00:00">01:00</option>
+						<option value="02:00:00">02:00</option>
+						<option value="03:00:00">03:00</option>
+						<option value="04:00:00">04:00</option>
+						<option value="05:00:00">05:00</option>
+						<option value="06:00:00">06:00</option>
+						<option value="07:00:00">07:00</option>
+						<option value="08:00:00">08:00</option>
+						<option value="09:00:00">09:00</option>
+						<option value="10:00:00">10:00</option>
+						<option value="11:00:00">11:00</option>
+						<option value="12:00:00">12:00</option>
+						<option value="13:00:00">13:00</option>
+						<option value="14:00:00">14:00</option>
+						<option value="15:00:00">15:00</option>
+						<option value="16:00:00">16:00</option>
+						<option value="17:00:00">17:00</option>
+						<option value="18:00:00">18:00</option>
+						<option value="19:00:00">19:00</option>
+						<option value="20:00:00">20:00</option>
+						<option value="21:00:00">21:00</option>
+						<option value="22:00:00">22:00</option>
+						<option value="23:00:00">23:00</option>
+						<option value="24:00:00">24:00</option>
+					</select>
+					<br/>
+				</p>
+				<p>Do: 
+					<select name="to" id="to" >
+						<option value="00:00:00">00:00</option>
+						<option value="01:00:00">01:00</option>
+						<option value="02:00:00">02:00</option>
+						<option value="03:00:00">03:00</option>
+						<option value="04:00:00">04:00</option>
+						<option value="05:00:00">05:00</option>
+						<option value="06:00:00">06:00</option>
+						<option value="07:00:00">07:00</option>
+						<option value="08:00:00">08:00</option>
+						<option value="09:00:00">09:00</option>
+						<option value="10:00:00">10:00</option>
+						<option value="11:00:00">11:00</option>
+						<option value="12:00:00">12:00</option>
+						<option value="13:00:00">13:00</option>
+						<option value="14:00:00">14:00</option>
+						<option value="15:00:00">15:00</option>
+						<option value="16:00:00">16:00</option>
+						<option value="17:00:00">17:00</option>
+						<option value="18:00:00">18:00</option>
+						<option value="19:00:00">19:00</option>
+						<option value="20:00:00">20:00</option>
+						<option value="21:00:00">21:00</option>
+						<option value="22:00:00">22:00</option>
+						<option value="23:00:00">23:00</option>
+						<option value="24:00:00">24:00</option>
+					</select>
+					<br/>
+				</p>
+				<p><input type="submit" value="Zapisz"/></p>
+			</form>
+		</div>
 					<script>
+					
+					var day;
+					
+					$('#hours-background').click(function(){
+						hideHours();
+						
+					});
+					
+					$('#hours-form').submit(function(event){
+						event.preventDefault();
+						
+						var $inputs = $('#hours-form :input');
+						var values = {};
+					    $inputs.each(function() {
+					        values[this.name] = $(this).val();
+					    });
+						
+						var parameters = {
+								from : values['from'],
+								to : values['to'],
+								day : day,
+								username : $('#listOfUsers').val()
+						};
+						
+						
+						$.post('/calendar_hours_create', parameters, function(response){
+							console.log(response);
+							refreshCalendarOfUser($('#listOfUsers').val());
+						});
+						
+						hideHours();
+					});
+					
+					function showHours(){
+						$('#hours-background').show();
+						$('#hours-form-box').show();						
+					}
+					
+					function hideHours(){
+						$('#hours-background').hide();
+						$('#hours-form-box').hide();						
+					}
 					
 					var SelectedDates = {};
 					function refreshCalendarOfUser(username){
@@ -70,10 +180,12 @@
 				        dateFormat: "yy-mm-dd",
 						onSelect : function(){
 							//po kliknieciu zapisz do bazy
+							day = $(this).prop('value');
+							showHours();
 							
 							sendRequestForCalendarCreation($(this).prop('value'),false,$('#listOfUsers').val() );
 							$('#datepicker').datepicker('setDate');
-							 $(this).data('datepicker').inline = true;
+							$(this).data('datepicker').inline = true;
 							
 						},
 						beforeShowDay: function(date) {
@@ -95,6 +207,7 @@
 					$('#listOfUsers').on('change', function(){
 						refreshCalendarOfUser($('#listOfUsers').val());
 					});
+										
 		</script>
 <!--..............................................................................................-->    
    

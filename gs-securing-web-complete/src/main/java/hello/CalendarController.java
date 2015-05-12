@@ -44,6 +44,19 @@ public class CalendarController {
         return "OK";
     }
 	
+	@RequestMapping(value = "/calendar_hours_create", method = RequestMethod.POST)
+    public @ResponseBody String showHelloPage(
+    		@RequestParam("from") String from,
+    		@RequestParam("to") String to,
+    		@RequestParam("day") String day,
+    		@RequestParam("username") String username) throws SQLException {
+  
+    	//WebSecurityConfig ob = new WebSecurityConfig();
+    	ob.insertCalendarHoursIntoDatabase(from, to, day, username);
+    	
+        return "OK";
+    }	
+	
 	@RequestMapping(value = "/calendar_list", method = RequestMethod.GET)
     public @ResponseBody List<Date> showHelloPage(
     		@RequestParam("username") String username) throws SQLException {
