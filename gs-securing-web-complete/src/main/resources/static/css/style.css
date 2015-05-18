@@ -8,11 +8,11 @@
 	   		font-size: 25px;
  		}
 .ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default{
-		 	background-color : #74DF00
+		 	background-color : #FE2E2E;
 }
 
 .Highlighted a{
-   background-color : #FE2E2E !important;
+   background-color : #74DF00 !important;
    background-image :none !important;
    color: White !important;
    font-weight:bold !important;

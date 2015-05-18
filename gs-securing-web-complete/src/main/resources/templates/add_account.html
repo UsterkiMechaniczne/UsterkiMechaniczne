@@ -1,110 +1,130 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
-    <head>
-        <link rel="stylesheet" href="css/bootstrap.min.css"/>
-		<link rel="stylesheet" href="css/bootstrap-theme.min.css"/>
-		<script src="js/jquery-2.1.3.min.js"></script>
-		<script src="js/bootstrap.min.js"></script>
-        <title>Add new employee panel </title>
-    </head>
-    <body>
-        <div class="container">
-	<div class="row clearfix">
-		<div class="col-md-12 column">
-			<h3 class="text-center">
-				Panel dodawania nowych pracowników
-			</h3>
-		</div>
-	</div>
-	<div class="row clearfix">
-		<div class="col-md-8 col-md-offset-2" th:if="${param.u != null}">
-			<p class="bg-danger" style= "font-size: 17px; text-align: center;" th:if="${param.u[0] == 'exist'}">
-				Taka nazwa użytkownika jest już zajęta.
-			</p>
-			<p class="bg-danger" style= "font-size: 17px; text-align: center;" th:if="${param.u[0] == 'empty'}">
-				Żadne z pól nie może być puste.
-			</p>
-			<p class="bg-danger" style= "font-size: 17px; text-align: center;" th:if="${param.u[0] == 'authority'}">
-				Musisz wybrać stanowisko pracownika.
-			</p>
-		</div>
-		<div class="col-md-12 column">
-		
-		<form id="newUserForm" action="/user_create" method="post">
-			<table class="table">
-				<tbody>
-					<tr>
-						<td>
-						<div><label> Imię pracownika :<input type="text" name="first_name"/> </label></div>
-						</td>
-					</tr>
-					<tr class="active">
-						<td>
-					    <div><label> Nazwisko pracownika: <input type="text" name="last_name"/> </label></div>
-						</td>
-					</tr>
-					<tr class="success">
-						<td>
-						<div><label> Login pracownika: <input type="text" name="username"></input></label></div>
-						</td>
-					</tr>
-					<tr class="warning">
-						<td>
-					    <div><label> Hasło pracownika: <input type="password" name="password"></input></label></div>
-						</td>
-					</tr>
-					<tr class="danger">
-						<td>
-								  <label><input type="radio" name="authority" value="Sekretarka">Sekretarka</input></label>
-								  <label><input type="radio" name="authority" value="Mechanik">Mechanik</input></label>
-								  <label><input type="radio" name="authority" value="Księgowa">Ksiegowa</input></label>
-						</td>
-					</tr>
-				</tbody>
-			</table>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+<link rel="stylesheet" href="css/bootstrap.min.css" />
+<link rel="stylesheet" href="css/bootstrap-theme.min.css" />
+<script src="js/jquery-2.1.3.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<title>Add new employee panel</title>
+</head>
+<body>
+	<div class="container">
+		<div class="row clearfix">
 			<div class="col-md-12 column">
-					 <button type="submit" class="btn btn-success" id="addWorkerButton">Dodaj nowego pracownika</button>
+				<h3 class="text-center">Panel dodawania nowych pracowników</h3>
 			</div>
-				
-			</form>
-			
-			<div class="row clearfix">
-				<div class="col-md-12 column">
-					 <a href="main" style="text-decoration: none"><button type="button" class="btn btn-danger">Anuluj dodawania pracownika</button></a>
+		</div>
+		<div class="row clearfix">
+			<div class="col-md-8 col-md-offset-2" th:if="${param.u != null}">
+				<p class="bg-danger" style="font-size: 17px; text-align: center;"
+					th:if="${param.u[0] == 'exist'}">Taka nazwa użytkownika jest
+					już zajęta.</p>
+				<p class="bg-danger" style="font-size: 17px; text-align: center;"
+					th:if="${param.u[0] == 'empty'}">Żadne z pól nie może być
+					puste.</p>
+				<p class="bg-danger" style="font-size: 17px; text-align: center;"
+					th:if="${param.u[0] == 'authority'}">Musisz wybrać stanowisko
+					pracownika.</p>
+			</div>
+			<div class="col-md-12 column">
+
+				<form id="newUserForm" action="/user_create" method="post">
+					<table class="table">
+						<tbody>
+							<tr>
+								<td>
+									<div>
+										<label> Imię pracownika :<input type="text"
+											name="first_name" />
+										</label>
+									</div>
+								</td>
+							</tr>
+							<tr class="active">
+								<td>
+									<div>
+										<label> Nazwisko pracownika: <input type="text"
+											name="last_name" />
+										</label>
+									</div>
+								</td>
+							</tr>
+							<tr class="success">
+								<td>
+									<div>
+										<label> Login pracownika: <input type="text"
+											name="username"></input></label>
+									</div>
+								</td>
+							</tr>
+							<tr class="warning">
+								<td>
+									<div>
+										<label> Hasło pracownika: <input type="password"
+											name="password"></input></label>
+									</div>
+								</td>
+							</tr>
+							<tr class="danger">
+								<td><label><input type="radio" name="authority"
+										value="Sekretarka">Sekretarka</input></label> <label><input
+										type="radio" name="authority" value="Mechanik">Mechanik</input></label>
+									<label><input type="radio" name="authority"
+										value="Księgowa">Ksiegowa</input></label></td>
+							</tr>
+						</tbody>
+					</table>
+					<div class="col-md-12 column">
+						<button type="submit" class="btn btn-success" id="addWorkerButton">Dodaj
+							nowego pracownika</button>
+					</div>
+
+				</form>
+
+				<div class="row clearfix">
+					<div class="col-md-12 column">
+						<a href="main" style="text-decoration: none"><button
+								type="button" class="btn btn-danger">Anuluj dodawania
+								pracownika</button></a>
+					</div>
 				</div>
 			</div>
 		</div>
 	</div>
-</div>
-       
-<script>
-$('#addWorkerButton').click(function(event){
-	event.preventDefault();
-	
-	if($('input[name="authority"]:checked').length==0){
-		alert('Wybierz stanowisko nowego pracownika');
-		return;
-	}
-	if($('input[name="first_name"]').val().search(/[^a-zA-ZęóąśłżźćńĘÓĄŚŁŻŹĆŃ]+/) === 0){
-		alert('Imię powinno składać się z samych liter!');
-		return;
-	}
-	if($('input[name="last_name"]').val().search(/[^a-zA-ZęóąśłżźćńĘÓĄŚŁŻŹĆŃ]+/) === 0){
-		alert('Nazwisko powinno składać się z samych liter!');
-		return;
-	}
-	if($('input[name="password"]').val().search(/^(?=.*\d)(?=.*[A-Z])[0-9a-zA-Z]{5,}$/) === -1){
-		alert('Hasło musi zawierać co najmniej jedną cyfrę, jedną wielką literę i mieć minimum 5 liter!');
-		return;
-	}
-	
-		$('#newUserForm').submit();
-	
-});
 
-</script>       
-       
-        
-    </body>
+	<script>
+		$('#addWorkerButton')
+				.click(
+						function(event) {
+							event.preventDefault();
+
+							if ($('input[name="authority"]:checked').length == 0) {
+								alert('Wybierz stanowisko nowego pracownika');
+								return;
+							}
+							if ($('input[name="first_name"]').val().search(
+									/[^a-zA-ZęóąśłżźćńĘÓĄŚŁŻŹĆŃ]+/) === 0) {
+								alert('Imię powinno składać się z samych liter!');
+								return;
+							}
+							if ($('input[name="last_name"]').val().search(
+									/[^a-zA-ZęóąśłżźćńĘÓĄŚŁŻŹĆŃ]+/) === 0) {
+								alert('Nazwisko powinno składać się z samych liter!');
+								return;
+							}
+							if ($('input[name="password"]').val().search(
+									/^(?=.*\d)(?=.*[A-Z])[0-9a-zA-Z]{5,}$/) === -1) {
+								alert('Hasło musi zawierać co najmniej jedną cyfrę, jedną wielką literę i mieć minimum 5 liter!');
+								return;
+							}
+
+							$('#newUserForm').submit();
+
+						});
+	</script>
+
+
+</body>
 </html>

@@ -86,6 +86,18 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     	return users;
     }
     
+    public List<String> listOfMechanics() throws SQLException{
+    	List<String> mechanics = new LinkedList<>();
+    	String query = "SELECT u.username FROM users u LEFT JOIN authorities a ON a.username = u.username WHERE a.authority = 'Mechanik';";
+      	
+		Statement stmt = datasource.getConnection().createStatement();
+		ResultSet rs = stmt.executeQuery(query);
+		while(rs.next())
+			mechanics.add(rs.getString(1));
+		stmt.close();
+		System.out.println(mechanics);
+    	return mechanics;
+    }    
     
     public boolean userExists(String username) throws SQLException{
     	

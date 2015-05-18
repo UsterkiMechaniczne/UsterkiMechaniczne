@@ -34,6 +34,10 @@ public class UserController {
         return ob.listOfUsers();
     }
 	
+	@RequestMapping(value = "/mechanics_list", method = RequestMethod.GET)
+    public @ResponseBody List<String> listOfMechanics() throws SQLException {	
+        return ob.listOfMechanics();
+    }
     
 	//Dodawanie uzytkownika do bazy calendar, po przyjeciu zgloszenia przez director
     @RequestMapping(value = "/user_create", method = RequestMethod.POST)
