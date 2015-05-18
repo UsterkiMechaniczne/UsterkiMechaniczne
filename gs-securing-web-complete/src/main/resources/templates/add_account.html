@@ -31,7 +31,7 @@
 		</div>
 		<div class="col-md-12 column">
 		
-		<form action="/user_create" method="post">
+		<form id="newUserForm" action="/user_create" method="post">
 			<table class="table">
 				<tbody>
 					<tr>
@@ -64,7 +64,7 @@
 				</tbody>
 			</table>
 			<div class="col-md-12 column">
-					 <button type="submit" class="btn btn-success">Dodaj nowego pracownika</button>
+					 <button type="submit" class="btn btn-success" id="addWorkerButton">Dodaj nowego pracownika</button>
 			</div>
 				
 			</form>
@@ -77,6 +77,34 @@
 		</div>
 	</div>
 </div>
+       
+<script>
+$('#addWorkerButton').click(function(event){
+	event.preventDefault();
+	
+	if($('input[name="authority"]:checked').length==0){
+		alert('Wybierz stanowisko nowego pracownika');
+		return;
+	}
+	if($('input[name="first_name"]').val().search(/[^a-zA-ZęóąśłżźćńĘÓĄŚŁŻŹĆŃ]+/) === 0){
+		alert('Imię powinno składać się z samych liter!');
+		return;
+	}
+	if($('input[name="last_name"]').val().search(/[^a-zA-ZęóąśłżźćńĘÓĄŚŁŻŹĆŃ]+/) === 0){
+		alert('Nazwisko powinno składać się z samych liter!');
+		return;
+	}
+	if($('input[name="password"]').val().search(/^(?=.*\d)(?=.*[A-Z])[0-9a-zA-Z]{5,}$/) === -1){
+		alert('Hasło musi zawierać co najmniej jedną cyfrę, jedną wielką literę i mieć minimum 5 liter!');
+		return;
+	}
+	
+		$('#newUserForm').submit();
+	
+});
+
+</script>       
+       
         
     </body>
 </html>
