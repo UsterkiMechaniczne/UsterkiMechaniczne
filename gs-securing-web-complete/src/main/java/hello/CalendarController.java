@@ -8,6 +8,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.HashMap;
 
+import model.Client;
+import model.Report;
+import model.Task;
 import model.User;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,6 +78,31 @@ public class CalendarController {
     	
         return "/secretary";
     }	
+	
+	@RequestMapping(value = "/task_update", method = RequestMethod.POST)
+    public String taskCreate(
+    		@RequestParam("taskid") Integer taskid,
+    		@RequestParam("repairs_costs") Double repairCost,
+    		@RequestParam("parts_costs") Double partsCosts,
+    		@RequestParam("description") String description
+    		) throws SQLException {
+  
+    	ob.updateTask(taskid, repairCost, partsCosts, description);
+    	
+        return "/mechanic";
+    }	
+	
+	
+	@RequestMapping(value = "/tasks_list", method = RequestMethod.GET)
+    public @ResponseBody List<Task> listOfTasks(@RequestParam("mechanic") String mechanic) throws SQLException {	
+        return ob.listOfActiveTasksForMechanics(mechanic);
+    }
+    
+	@RequestMapping(value = "/report_full", method = RequestMethod.GET)
+    public @ResponseBody List<Report> listOfTasks() throws SQLException {	
+        return ob.reportOfTransactions();
+    }
+	
 	
 	@RequestMapping(value = "/calendar_list", method = RequestMethod.GET)
     public @ResponseBody List<Date> showHelloPage(

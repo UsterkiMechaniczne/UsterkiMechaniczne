@@ -1,31 +1,59 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
-    <head>
-        <title>Konto użytkownika</title>
-        <link rel="stylesheet" href="css/bootstrap.min.css"/>
-		<link rel="stylesheet" href="css/bootstrap-theme.min.css"/>
-		<link rel="stylesheet" href="jquery/jquery-ui.css"/>
-  		<script src="js/jquery-2.1.3.min.js"></script>
-  		<script src="jquery/jquery-ui.js"></script>
-		<script src="js/bootstrap.min.js"></script>
-        
-        <link rel="stylesheet" type="text/css" href="css/style.css"/>
-        
-    </head>
-    <body>
-        <h1 th:inline="text">Witaj [[${#httpServletRequest.remoteUser}]]!</h1>
-        <h2 th:inline="text">Jesteś zalogowany jako: [[${#httpServletRequest.userPrincipal.authorities[0]}]]</h2>
-       
-       
-       <!-- ....................................... Kalendarz!!!........................................-->   
-		<h4>Kliknij na kalendarz, aby zobaczyć swoje dni pracy
-		<input type="hidden" id="datepicker" />
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+
+
+<link rel="stylesheet" href="css/bootstrap.min.css" />
+<link rel="stylesheet" href="css/bootstrap-theme.min.css" />
+<link rel="stylesheet" href="jquery/jquery-ui.css" />
+<link rel="stylesheet" href="css/dataTables.bootstrap.css" />
+<script src="js/jquery-2.1.3.min.js"></script>
+<script src="jquery/jquery-ui.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script charset="utf8" src="js/jquery.dataTables.js"></script>
+
+<script charset="utf8" src="js/dataTables.bootstrap.js"></script>
+<script charset="utf8" src="js/jspdf.debug.js"></script>
+
+<link rel="stylesheet" type="text/css" href="css/style.css" />
+
+</head>
+
+<body>
+
+
+
+
+	<div class="container">
+		<div class="row clearfix">
+			<div class="col-md-6 column">
+				<h3 class="text-left text-primary" th:inline="text">Panel
+					Księgowej: [[${#httpServletRequest.remoteUser}]]</h3>
+			</div>
+
+			<div class="col-md-6 column">
+				<form th:action="@{/logout}" method="post">
+					<input class="btn btn-danger" style="float: right; margin: 3%"
+						type="submit" value="Wyloguj" />
+				</form>
+			</div>
+		</div>
+
+
+
+
+
+		<!-- ....................................... Kalendarz!!!........................................-->
+		<h4>
+			Kliknij na kalendarz, aby zobaczyć swoje dni pracy <input
+				type="hidden" id="datepicker" />
 		</h4>
 		<div id="datepicker-container">
-				<div id="datepicker"></div>
+			<div id="datepicker"></div>
 		</div>
-					<script th:inline="javascript">
+		<script th:inline="javascript">
 					
 					var SelectedDates = {};
 					function refreshCalendarOfUser(username){
@@ -60,13 +88,105 @@
 				            }
 						}
 					});
+					
+					
+					
+					$(document).ready(function(){
+						$.getJSON('/report_full', function(result){
+							$.each(result, function(index,report){ 
+								$('#clientsTable tbody').append('<tr class="warning"><td><input type="checkbox" value="'+report.task.id+'"></input>'+report.task.id+'</td><td>'+report.client.numberPlate+'</td><td>'+
+										report.client.firstName + " " + report.client.lastName+'</td><td>'+report.task.title+'</td><td>'+report.task.description+'</td><td>'+report.task.hours+'</td><td>'+report.task.date+'</td><td>'+report.task.mechanic+'</td><td>'+report.task.repairCosts+'</td><td>'+
+										report.task.partsCosts+'</td><td>'+report.cost+'</td><td>'+(report.task.isDone ? 'Zrealizowano' : 'W trakcie')+'</td></tr>')
+							});
+							$('#clientsTable').dataTable(
+									{
+										"sPaginationType": "simple",
+								        "language": {
+								            "lengthMenu": "Wyświetl _MENU_ wyników na każdej stronie",
+								            "zeroRecords": "Brak rekordów",
+								            "info": "Wyświetlam stronę _PAGE_ z _PAGES_",
+								            "infoEmpty": "Brak rekordów",
+								            "search": "Szukaj",
+								            "infoFiltered": "(Dostępnych _MAX_ wszystkich rekordów)"
+								        }});
+							$('tr[name=client-row]').click(function(row){
+								$(this).find('input').prop('checked', true);
+								$('tr[name=client-row]').each(function(){
+									$(this).switchClass("success", "warning");
+								});
+								$(this).switchClass("warning", "success");
+							});
+						});
+						
+					});
 			
 		</script>
-<!--..............................................................................................-->  
-       
-        <form th:action="@{/logout}" method="post">
-            <input type="submit" value="Wyloguj"/>
-        </form>
-        
-    </body>
+		
+		<!-- Skrypt do pobierania pdf -->
+		<script>
+		function demoFromHTML() {
+		    var pdf = new jsPDF('p', 'pt', 'a4');
+		    source = $('#reporttab')[0];
+
+		    specialElementHandlers = {
+		        '#bypassme': function (element, renderer) {
+		            return true
+		        }
+		    };
+		    margins = {
+		        top: 80,
+		        bottom: 60,
+		        left: 40,
+		        right : 10
+		    };
+		    pdf.fromHTML(
+		    source, 
+		    margins.left, 
+		    margins.top, { 
+		        'width': margins.width, 
+		        'elementHandlers': specialElementHandlers
+		    },
+
+		    function (dispose) {
+		        pdf.save('Raport.pdf');
+		    }, margins);
+		}
+		
+		
+		</script>
+		
+		<!--..............................................................................................-->
+
+		<!--..................................Aktywne zadania mechanika..........................................-->
+			<div class="container">
+				<div class="row clearfix">
+					<div id="reporttab" class="col-md-12 column">
+						<table id="clientsTable" class="table table-hover">
+							<thead>
+								<tr>
+									<th>Numer Ew.</th>
+									<th>Nr. Rej.</th>
+									<th>Klient</th>
+									<th>Tytuł</th>
+									<th>Opis</th>
+									<th>Godziny</th>
+									<th>Data</th>
+									<th>Mechanik</th>
+									<th>Naprawa</th>
+									<th>Części</th>
+									<th>Koszt</th>
+									<th>Status</th>
+								</tr>
+							</thead>
+							<tbody>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+			<button class="btn btn-primary" onclick="javascript:demoFromHTML();">Pobierz raport</button>
+
+	</div>
+
+</body>
 </html>

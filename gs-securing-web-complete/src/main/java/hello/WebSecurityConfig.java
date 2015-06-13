@@ -13,6 +13,8 @@ import java.util.HashMap;
 import java.util.List;
 
 import model.Client;
+import model.Report;
+import model.Task;
 import model.User;
 
 import org.apache.tomcat.jdbc.pool.DataSource;
@@ -70,11 +72,64 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 			clients.add( new Client(rs.getString(1), rs.getString(2), rs.getString(3))  );
 		
 		}
-			
+		
 		stmt.close();
 		System.out.println(clients);
     	return clients;
     }
+    
+    public List<Task> listOfActiveTasksForMechanics(String mechanicUsername) throws SQLException{
+    	List<Task> tasks = new LinkedList<>();
+    	String query = "select id, number_plate, description, title, hours, date, parts_costs, repair_costs, is_done from tasks where mechanic = '"+mechanicUsername+"' and is_done = false";
+      	
+   
+		Statement stmt = datasource.getConnection().createStatement();
+		ResultSet rs = stmt.executeQuery(query);
+		while(rs.next()) {
+			tasks.add(new Task(rs.getInt(1), rs.getString(2), mechanicUsername, rs.getString(3), 
+					rs.getString(4), rs.getInt(5), rs.getString(6), rs.getDouble(7), rs.getDouble(8), false));		
+		}
+			
+		stmt.close();
+		System.out.println(tasks);
+    	return tasks;
+    }
+    
+    public List<Report> reportOfTransactions() throws SQLException{
+    	List<Report> tasks = new LinkedList<>();
+    	String query = "select id, tasks.number_plate, mechanic, description, title, hours, date, parts_costs, repair_costs, is_done, clients.first_name, clients.last_name from tasks join clients on tasks.number_plate = clients.number_plate";
+      	
+   
+		Statement stmt = datasource.getConnection().createStatement();
+		ResultSet rs = stmt.executeQuery(query);
+		while(rs.next()) {
+			Task task = new Task(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), 
+					rs.getString(5), rs.getInt(6), rs.getString(7), rs.getDouble(8), rs.getDouble(9), rs.getBoolean(10));	
+			Client client =  new Client(rs.getString(11), rs.getString(12), rs.getString(2));
+			Report report = new Report(client, task, rs.getDouble(8) +  rs.getDouble(9));
+			tasks.add(report);
+			
+		}
+			
+		stmt.close();
+		System.out.println(tasks);
+    	return tasks;
+    }
+    
+    
+    
+    public void updateTask(int taskid, double repairCost, double partsCosts, String description) throws SQLException{
+        
+    	String query = "update tasks set is_done=true, repair_costs = "+repairCost+", parts_costs = "+partsCosts+", description='"+description+"' where id="+taskid+"; " ;
+    	System.out.println(query);
+    	
+    	
+    	Statement stmt = datasource.getConnection().createStatement();
+    	stmt = datasource.getConnection().createStatement();
+        stmt.executeUpdate(query);
+        stmt.close();
+    }
+    
     
     public List<String> listOfUsers() throws SQLException{
     	List<String> users = new LinkedList<>();
@@ -217,7 +272,7 @@ public boolean clientExists(String number_plate) throws SQLException{
     public void insertTaskToDb(String number_plate, String title, String description, String mechanic, String date, int hours) throws SQLException{
         
     	
-    	String query = "insert into tasks (number_plate, title, description, date, hours, mechanic) values ('"+number_plate+"','"+title+"','"+description+"','"+date+"','"+hours+"','"+mechanic+"'); " ;
+    	String query = "insert into tasks (number_plate, title, description, date, hours, mechanic, is_done) values ('"+number_plate+"','"+title+"','"+description+"','"+date+"','"+hours+"','"+mechanic+"', false); " ;
     	Statement stmt = datasource.getConnection().createStatement();
     	
     	System.out.println(query);
@@ -279,7 +334,7 @@ public boolean clientExists(String number_plate) throws SQLException{
       	 
       	  Statement stmt = null;
       	    String query = "create table clients (  first_name varchar(50) not null, last_name varchar(50) not null, number_plate varchar(15) not null primary key); ";
-      	    String query2 = "create table tasks ( id SERIAL primary key, mechanic varchar(50) not null references users(username) ON DELETE CASCADE, number_plate varchar(15) not null references clients(number_plate) ON DELETE CASCADE, description text not null, title text not null, hours int not null, date date not null);";
+      	    String query2 = "create table tasks ( id SERIAL primary key, mechanic varchar(50) not null references users(username) ON DELETE CASCADE, number_plate varchar(15) not null references clients(number_plate) ON DELETE CASCADE, description text not null, title text not null, hours int not null, date date not null, parts_costs float, repair_costs float, is_done boolean );";
       	    String calendar = "create table calendar ( day date, work_day boolean, username varchar(50) not null REFERENCES users(username) );";
       	    String calendar_hours = "create table calendar_hours ( fromT Time not null, toT Time not  null, day date not null, username varchar(50) not null REFERENCES users(username) );";
 
@@ -333,6 +388,9 @@ public boolean clientExists(String number_plate) throws SQLException{
             User userDetails = new User("Jan", "Kowalski", "admin", encoder.encode("admin"), new SimpleGrantedAuthority("Kierownik"));
             insertUserIntoDatabase(userDetails);
             
+            insertUserIntoDatabase(new User("Janina", "Mistrzowska", "sekretarka", encoder.encode("12345Q"), new SimpleGrantedAuthority("Sekretarka")));
+            insertUserIntoDatabase(new User("Paweł", "Pracowity", "mechanik", encoder.encode("12345Q"), new SimpleGrantedAuthority("Mechanik")));
+            insertUserIntoDatabase(new User("Anna", "Pieniężna", "ksiegowa", encoder.encode("12345Q"), new SimpleGrantedAuthority("Ksiegowa")));
           
         }
     }

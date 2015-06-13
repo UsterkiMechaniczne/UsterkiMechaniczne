@@ -1,46 +1,58 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 <head>
 
-        <link rel="stylesheet" href="css/bootstrap.min.css"/>
-		<link rel="stylesheet" href="css/bootstrap-theme.min.css"/>
-		<link rel="stylesheet" href="jquery/jquery-ui.css"/>
-  		<script src="js/jquery-2.1.3.min.js"></script>
-  		<script src="jquery/jquery-ui.js"></script>
-		<script src="js/bootstrap.min.js"></script>
-        
-        <link rel="stylesheet" type="text/css" href="css/style.css"/>
+
+<link rel="stylesheet" href="css/bootstrap.min.css" />
+<link rel="stylesheet" href="css/bootstrap-theme.min.css" />
+<link rel="stylesheet" href="jquery/jquery-ui.css" />
+<link rel="stylesheet" href="css/dataTables.bootstrap.css" />
+<script src="js/jquery-2.1.3.min.js"></script>
+<script src="jquery/jquery-ui.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script charset="utf8" src="js/jquery.dataTables.js"></script>
+
+<script charset="utf8" src="js/dataTables.bootstrap.js"></script>
+
+<link rel="stylesheet" type="text/css" href="css/style.css" />
 
 </head>
 
 <body>
 
-<h1 th:inline="text">Witaj [[${#httpServletRequest.remoteUser}]]!</h1>
-        <h2 th:inline="text">Jesteś zalogowany jako: [[${#httpServletRequest.userPrincipal.authorities[0]}]]</h2>
 
 
 
+	<div class="container">
+		<div class="row clearfix">
+			<div class="col-md-6 column">
+				<h3 class="text-left text-primary" th:inline="text">Panel
+					Mechanika: [[${#httpServletRequest.remoteUser}]]</h3>
+			</div>
 
-<div class="container">
-	<div class="row clearfix">
-		<div class="col-md-12 column">
-			<h3 class="text-left text-primary" th:inline="text">
-				Panel Mechanika: [[${#httpServletRequest.remoteUser}]]
-			</h3>
+			<div class="col-md-6 column">
+				<form th:action="@{/logout}" method="post">
+					<input class="btn btn-danger" style="float: right; margin: 3%"
+						type="submit" value="Wyloguj" />
+				</form>
+			</div>
 		</div>
-	</div>
-	
-	
-	        
-<!-- ....................................... Kalendarz!!!........................................-->   
-		<h4>Kliknij na kalendarz, aby zobaczyć swoje dni pracy
-		<input type="hidden" id="datepicker" />
+
+
+
+
+
+		<!-- ....................................... Kalendarz!!!........................................-->
+		<h4>
+			Kliknij na kalendarz, aby zobaczyć swoje dni pracy <input
+				type="hidden" id="datepicker" />
 		</h4>
 		<div id="datepicker-container">
-				<div id="datepicker"></div>
+			<div id="datepicker"></div>
 		</div>
-					<script th:inline="javascript">
+		<script th:inline="javascript">
 					
 					var SelectedDates = {};
 					function refreshCalendarOfUser(username){
@@ -75,65 +87,100 @@
 				            }
 						}
 					});
+					
+					
+					
+					$(document).ready(function(){
+						$.getJSON('/tasks_list', {mechanic:[[${#httpServletRequest.remoteUser}]]}, function(result){
+							$.each(result, function(index,client){ 
+								$('#clientsTable tbody').append('<tr class="warning" name="client-row"><td><input type="radio" name="taskid" value="'+client.id+'" required="required" ></input>'+client.plate+'</td><td>'+client.description+'</td><td>'+client.title+'</td><td>'+client.hours+'</td><td>'+client.date+'</td><td>'+client.partsCosts+'</td><td>'+client.repairCosts+'</td></tr>')
+							});
+							$('#clientsTable').dataTable(
+									{
+										"sPaginationType": "simple",
+								        "language": {
+								            "lengthMenu": "Wyświetl _MENU_ wyników na każdej stronie",
+								            "zeroRecords": "Brak rekordów",
+								            "info": "Wyświetlam stronę _PAGE_ z _PAGES_",
+								            "infoEmpty": "Brak rekordów",
+								            "search": "Szukaj",
+								            "infoFiltered": "(Dostępnych _MAX_ wszystkich rekordów)"
+								        }});
+							$('tr[name=client-row]').click(function(row){
+								$(this).find('input').prop('checked', true);
+								$('tr[name=client-row]').each(function(){
+									$(this).switchClass("success", "warning");
+								});
+								$(this).switchClass("warning", "success");
+							});
+						});
+						
+					});
 			
 		</script>
-<!--..............................................................................................-->  
-	
-	
-        <form th:action="@{/logout}" method="post">
-            <input type="submit" value="Wyloguj"/>
-        </form>
-	
-	<div class="row clearfix">
-		<div class="col-md-12 column">
-			<h3>
-				Zgłoś wykonane zadanie.
-			</h3>
-			<form class="form-horizontal" role="form">
-				<div class="form-group">
-					 <label for="inputEmail3" class="col-sm-2 control-label">Cena usługi</label>
-					<div class="col-sm-10">
-						<input type="text" class="form-control" id="inputEmail3"/>
+		<!--..............................................................................................-->
+
+		<!--..................................Aktywne zadania mechanika..........................................-->
+		<form id="task-form" method="POST" action="/task_update">
+			<div class="container">
+				<div class="row clearfix">
+					<div class="col-md-12 column">
+						<table id="clientsTable" class="table table-hover">
+							<thead>
+								<tr>
+									<th>Numer rejestracyjny</th>
+									<th>Opis</th>
+									<th>c</th>
+									<th></th>
+									<th></th>
+									<th>Koszt części</th>
+									<th>Koszt naprawy</th>
+								</tr>
+							</thead>
+							<tbody>
+							</tbody>
+						</table>
 					</div>
 				</div>
-				<div class="form-group">
-					 <label for="inputEmail3" class="col-sm-2 control-label">Cena części</label>
-					<div class="col-sm-10">
-						<input type="text" class="form-control" id="inputEmail3"/>
-					</div>
-				</div>
-				<div class="form-group">
-					 <label for="inputEmail3" class="col-sm-2 control-label">Opis wykonanej usługi</label>
-					<div class="col-sm-10">
-						<input type="text" class="form-control" id="inputEmail3"/>
-					</div>
-				</div>
-				<div class="form-group">
-					 <label for="inputEmail3" class="col-sm-2 control-label">Uwagi</label>
-					<div class="col-sm-10">
-						<input type="text" class="form-control" id="inputEmail3"/>
-					</div>
-				</div>
-				<div class="form-group">
-					<div class="col-sm-offset-2 col-sm-10">
-						<div class="checkbox">
-							 <label><input type="checkbox"/> Zadanie zostało wykonane</label>
+			</div>
+
+			<div class="row clearfix">
+				<div class="col-md-12 column">
+				
+					<div class="form-group">
+						<label for="repairs_costs" class="col-sm-2 control-label">Koszt naprawy</label>
+						<div class="col-sm-10">
+							<input type="number" class="form-control" style="width: 120px;" id="repairs_costs" name="repairs_costs" value="100" required="required"/>
+						</div>
+					</div>	
+		
+					<div class="form-group">
+						<label for="parts_costs" class="col-sm-2 control-label">Koszt części</label>
+						<div class="col-sm-10">
+							<input type="number" class="form-control" style="width: 120px;" id="parts_costs" name="parts_costs" value="0.0" required="required"/>
+						</div>
+					</div>	
+					
+					<div class="form-group">
+						<label for="parts_costs" class="col-sm-2 control-label">Komentarz</label>
+						<div class="col-sm-10">
+							
+							<textarea  class="form-control"   id="description" name="description" placeholder="Wstaw komentarz do naprawy" required="required"  cols="40" rows="5" ></textarea>
+						</div>
+					</div>	
+				
+
+					<div class="form-group">
+						<div class="col-sm-offset-2 col-sm-10">
+							<button type="submit" class="btn btn-default">Dodaj</button>
 						</div>
 					</div>
 				</div>
-				<div class="form-group">
-					<div class="col-sm-offset-2 col-sm-10">
-						 <button type="submit" class="btn btn-default">Prześlij</button>
-					</div>
-				</div>
-			</form>
-		</div>
+			</div>
+
+		</form>
+
 	</div>
-	
-	
-	
-	
-	
-</div>
+
 </body>
 </html>
