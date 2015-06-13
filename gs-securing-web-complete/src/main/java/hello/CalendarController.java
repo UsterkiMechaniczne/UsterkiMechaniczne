@@ -2,8 +2,11 @@ package hello;
 
 import java.sql.Date;
 import java.sql.SQLException;
+import java.sql.Time;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.HashMap;
 
 import model.User;
 
@@ -57,10 +60,59 @@ public class CalendarController {
         return "OK";
     }	
 	
+	@RequestMapping(value = "/task_create", method = RequestMethod.POST)
+    public @ResponseBody String taskCreate(
+    		@RequestParam("client") String client,
+    		@RequestParam("title") String title,
+    		@RequestParam("description") String description,
+    		@RequestParam("mechanic") String mechanic,
+    		@RequestParam("date") String date,
+    		@RequestParam("hours") int hours
+    		) throws SQLException {
+  
+    	//WebSecurityConfig ob = new WebSecurityConfig();
+    	ob.insertTaskToDb(client, title, description, mechanic, date, hours);
+    	
+        return "redirect:/secretary?m=added";
+    }	
+	
 	@RequestMapping(value = "/calendar_list", method = RequestMethod.GET)
     public @ResponseBody List<Date> showHelloPage(
     		@RequestParam("username") String username) throws SQLException {
 		return ob.getCalendarOfUser(username);
     }
 	
+	@RequestMapping(value = "/calendar_working_hours", method = RequestMethod.GET)
+    public @ResponseBody HashMap<String, Time> getUserWorkingHours(
+    		@RequestParam("username") String username,
+    		@RequestParam("day") String day
+    		) throws SQLException {   	
+		
+        return ob.getUserWorkingHours(username, day);
+    }	
+	
+	@RequestMapping(value = "/mechanic_hours_left", method = RequestMethod.GET)
+    public @ResponseBody int getMechanicHoursLeft(
+    		@RequestParam("username") String username,
+    		@RequestParam("date") String day
+    		) throws SQLException {   	
+		
+		HashMap<String, Time> dates = ob.getUserWorkingHours(username, day);
+		
+		System.out.println("========================================");
+		int from = dates.get("from").getHours();
+		int to = dates.get("to").getHours();
+		int left = to - from;
+		//System.out.println(left);
+		
+		ArrayList<Integer> busy = ob.listOfBusyHours(username, day);
+		
+		for(int i=0; i<busy.size(); i++){
+			left -= busy.get(i);
+		}
+		System.out.println(left);
+		if(left < 0)
+			left = 0;
+        return left;
+    }
 }

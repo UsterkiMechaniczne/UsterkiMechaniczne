@@ -6,7 +6,10 @@ import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Time;
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.HashMap;
 import java.util.List;
 
 import model.Client;
@@ -99,6 +102,36 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     	return mechanics;
     }    
     
+    public HashMap<String, Time> getUserWorkingHours(String username, String day) throws SQLException{
+    	HashMap<String, Time> hours = new HashMap<String, Time>();
+    	String query = "SELECT fromt, tot FROM calendar_hours WHERE username = '"+username+"' AND day='"+day+"';";
+      	System.out.println(query);
+    	
+		Statement stmt = datasource.getConnection().createStatement();
+		ResultSet rs = stmt.executeQuery(query);
+		while(rs.next()){
+			hours.put("from", rs.getTime(1));
+			hours.put("to", rs.getTime(2));
+		}
+		stmt.close();
+		System.out.println(hours);
+    	return hours;
+    }  
+    
+    public ArrayList<Integer> listOfBusyHours(String username, String date) throws SQLException{
+    	ArrayList<Integer> hours = new ArrayList<Integer>();
+    	String query = "SELECT hours FROM tasks WHERE mechanic = '"+username+"' AND date = '"+date+"' ;";
+      	
+		Statement stmt = datasource.getConnection().createStatement();
+		ResultSet rs = stmt.executeQuery(query);
+		while(rs.next())
+			hours.add(rs.getInt(1));
+		stmt.close();
+		System.out.println(hours);
+		
+    	return hours;
+    }
+    
     public boolean userExists(String username) throws SQLException{
     	
     	Statement stmt = null;
@@ -130,7 +163,7 @@ public boolean clientExists(String number_plate) throws SQLException{
     //pobiera liste dni wolnych
     public List<Date> getCalendarOfUser(String username) throws SQLException{
     	List<Date> calendar = new LinkedList<>();
-    	String query = "select day from calendar where work_day = false and username='"+username+"';";
+    	String query = "select day from calendar where work_day = true and username='"+username+"';";
     	
     	System.out.println(query);
     	Statement stmt = datasource.getConnection().createStatement();
@@ -151,7 +184,7 @@ public boolean clientExists(String number_plate) throws SQLException{
     	
     	if(rs.next()){
     		
-    		query = "update calendar set work_day= "+(!rs.getBoolean(2))+ " where username='"+ username +"' AND day='" + day +"';";
+    		query = "update calendar set work_day= "+ work_day+ " where username='"+ username +"' AND day='" + day +"';";
     	}
     	stmt.close();
     	
@@ -174,6 +207,17 @@ public boolean clientExists(String number_plate) throws SQLException{
     		query = "update calendar_hours set fromt='"+ from +"', tot='" + to +"' where username='"+ username +"' AND day='" + day +"';";
     	}
     	stmt.close();
+    	
+    	System.out.println(query);
+    	stmt = datasource.getConnection().createStatement();
+        stmt.executeUpdate(query);
+        stmt.close();
+    }
+    
+    public void insertTaskToDb(String client, String title, String description, String mechanic, String date, int hours) throws SQLException{
+        
+    	String query = "insert into tasks (number_plate, title, description, date, hours, mechanic) values ('" + client + "','"+ title + "','"+ description + "','"+ date + "','"+ hours + "','" + mechanic+"'); " ;
+    	Statement stmt = datasource.getConnection().createStatement();
     	
     	System.out.println(query);
     	stmt = datasource.getConnection().createStatement();
@@ -234,7 +278,7 @@ public boolean clientExists(String number_plate) throws SQLException{
       	 
       	  Statement stmt = null;
       	    String query = "create table clients (  first_name varchar(50) not null, last_name varchar(50) not null, number_plate varchar(15) not null primary key); ";
-      	    String query2 = "create table tasks ( id int primary key, created_by varchar(50) not null references users(username) ON DELETE CASCADE, number_plate varchar(15) not null references clients(number_plate) ON DELETE CASCADE, description text not null);";
+      	    String query2 = "create table tasks ( id int primary key, mechanic varchar(50) not null references users(username) ON DELETE CASCADE, number_plate varchar(15) not null references clients(number_plate) ON DELETE CASCADE, description text not null, title text not null, hours int not null, date Time not null);";
       	    String calendar = "create table calendar ( day date, work_day boolean, username varchar(50) not null REFERENCES users(username) );";
       	    String calendar_hours = "create table calendar_hours ( fromT Time not null, toT Time not  null, day date not null, username varchar(50) not null REFERENCES users(username) );";
 
@@ -255,6 +299,24 @@ public boolean clientExists(String number_plate) throws SQLException{
       	else
       	{	
       		System.out.println("Tabela clients, task, calendar, etc. istnieje");
+      	}
+    	
+    	tables = dbm.getTables(null, null, "tasks", null);
+    	
+    	if (!tables.next()) {
+      	  System.out.println("Tworze tabele clients, tasks, calendar");
+      	 
+      	  Statement stmt = null;
+      	    String query = "create table tasks ( id serial primary key, mechanic varchar(50) not null references users(username) ON DELETE CASCADE, number_plate varchar(15) not null references clients(number_plate) ON DELETE CASCADE, description text not null, title text not null, hours int not null, date date not null);";
+
+      	    stmt = datasource.getConnection().createStatement();
+      	    stmt.executeUpdate(query);
+      	    stmt.close();
+    	    System.out.println("Utworzylem tabele tasks");
+      	}
+      	else
+      	{	
+      		System.out.println("Tabela task istnieje");
       	}
 
     	JdbcUserDetailsManager userDetailsService = new JdbcUserDetailsManager();

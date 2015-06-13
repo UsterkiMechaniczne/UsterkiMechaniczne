@@ -19,6 +19,7 @@
 </head>
 
 <body>
+<div style="position: absolute; top:0px; left:0px; background-color:#aaa; height: 100%; width: 100%; z-index:2; opacity: 0.5; display:none;" id="hours-background"></div>
 <div class="container">
 	<div class="row clearfix">
 		<div class="col-md-6 column">
@@ -58,15 +59,14 @@
         <a href="add_account" style="text-decoration: none"><button type="button" class="btn btn-info">Dodaj nowego użytkownika</button></a>
     <!--.................................... Kalendarz.................................................. -->
 	
-		<h4>Wybierz pracownika z listy, aby ustalić mu dni wolne od pracy</h4>
+		<h4>Wybierz pracownika z listy, aby ustalić mu dni pracy</h4>
 		<select id="listOfUsers"></select>
 		<input type="hidden" id="datepicker" />
 		 
 		<div id="datepicker-container">
 				<div id="datepicker"></div>
 		</div>
-		<div style="position: absolute; top:0px; left:0px; background-color:#aaa; height: 100%; width: 100%; opacity: 0.5; display:none;" id="hours-background"></div>
-		<div style="position: absolute; top:20%; left:calc(50% - 200px); background-color:#fff; z-index:2; width: 400px; height: 230px; display:none;" id="hours-form-box">
+		<div style="position: absolute; top:20%; left:calc(50% - 200px);border-radius: 4px; padding: 11px; text-align: center; border: solid #778 2px; background-color:#fff; z-index:2; width: 400px; display:none;" id="hours-form-box">
 			<form id="hours-form">
 				<p>Podaj godziny pracy:</p>
 				<p>
@@ -135,7 +135,8 @@
 		</div>
 					<script>
 					
-					var day;
+					var selected_day;
+					var selected_user;
 					
 					$('#hours-background').click(function(){
 						hideHours();
@@ -154,10 +155,14 @@
 						var parameters = {
 								from : values['from'],
 								to : values['to'],
-								day : day,
+								day : selected_day.prop('value'),
 								username : $('#listOfUsers').val()
 						};
 						
+						
+						sendRequestForCalendarCreation(selected_day.prop('value'),true,$('#listOfUsers').val() );
+						$('#datepicker').datepicker('setDate');
+						//$(this).data('datepicker').inline = true;
 						
 						$.post('/calendar_hours_create', parameters, function(response){
 							console.log(response);
@@ -169,7 +174,13 @@
 					
 					function showHours(){
 						$('#hours-background').show();
-						$('#hours-form-box').show();						
+						$('#hours-form-box').show();
+						$.get('/calendar_working_hours', {username:selected_user, day:selected_day.prop('value')}, function(data){
+							//console.log(data);
+							//$.each(data,function(key,value){
+								//$('#'+key).find('option[value=""'+value+'""]').attr("selected",true);
+							//});
+						});
 					}
 					
 					function hideHours(){
@@ -187,6 +198,7 @@
 							$('#datepicker').datepicker("refresh");
 						});
 					}
+					
 				//	SelectedDates[new Date('2015-05-05 00:00:00')] = new Date('2015-05-05 00:00:00');
 					
 					$.get('/user_list', function(data){
@@ -206,10 +218,10 @@
 						
 						$.post('/calendar_create', parameters, function(response){
 							console.log(response);
-							refreshCalendarOfUser($('#listOfUsers').val());
+							refreshCalendarOfUser();
 						});			
 					}
-					
+										
 					$( "#datepicker" ).datepicker({
 						buttonImage: 'kalendarz.png',
 				        buttonImageOnly: true,
@@ -220,22 +232,18 @@
 				        dateFormat: "yy-mm-dd",
 						onSelect : function(){
 							//po kliknieciu zapisz do bazy
-							day = $(this).prop('value');
+							selected_day = $(this);
+							selected_user = $('#listOfUsers').val();
 							showHours();
-							
-							sendRequestForCalendarCreation($(this).prop('value'),false,$('#listOfUsers').val() );
-							$('#datepicker').datepicker('setDate');
-							$(this).data('datepicker').inline = true;
-							
 						},
 						beforeShowDay: function(date) {
 				            
 							var Highlight = SelectedDates[date];
 				            if (Highlight) {
-				            	return [true, "Highlighted", 'Dzień wolny.'];
+				            	return [true, "Highlighted", 'Dzień roboczy'];
 				            }
 				            else {
-				                return [true, '', ''];
+				                return [true, '', 'Dzień wolny'];
 				            }
 				        },
 				        onClose: function() {
