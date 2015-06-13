@@ -191,6 +191,7 @@
 					var SelectedDates = {};
 					function refreshCalendarOfUser(username){
 						$.get('/calendar_list', {username:username}, function(data){
+							console.log("Wykonuje odswiezenie dla " + username);
 							SelectedDates = {};
 							$.each(data,function(i,value){
 								SelectedDates[new Date(value + " 00:00:00")] = new Date(value + " 00:00:00");
@@ -218,7 +219,7 @@
 						
 						$.post('/calendar_create', parameters, function(response){
 							console.log(response);
-							refreshCalendarOfUser();
+							refreshCalendarOfUser($('#listOfUsers').val());
 						});			
 					}
 										

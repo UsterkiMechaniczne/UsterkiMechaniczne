@@ -61,7 +61,7 @@ public class CalendarController {
     }	
 	
 	@RequestMapping(value = "/task_create", method = RequestMethod.POST)
-    public @ResponseBody String taskCreate(
+    public String taskCreate(
     		@RequestParam("client") String client,
     		@RequestParam("title") String title,
     		@RequestParam("description") String description,
@@ -73,7 +73,7 @@ public class CalendarController {
     	//WebSecurityConfig ob = new WebSecurityConfig();
     	ob.insertTaskToDb(client, title, description, mechanic, date, hours);
     	
-        return "redirect:/secretary?m=added";
+        return "/secretary";
     }	
 	
 	@RequestMapping(value = "/calendar_list", method = RequestMethod.GET)

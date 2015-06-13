@@ -214,9 +214,10 @@ public boolean clientExists(String number_plate) throws SQLException{
         stmt.close();
     }
     
-    public void insertTaskToDb(String client, String title, String description, String mechanic, String date, int hours) throws SQLException{
+    public void insertTaskToDb(String number_plate, String title, String description, String mechanic, String date, int hours) throws SQLException{
         
-    	String query = "insert into tasks (number_plate, title, description, date, hours, mechanic) values ('" + client + "','"+ title + "','"+ description + "','"+ date + "','"+ hours + "','" + mechanic+"'); " ;
+    	
+    	String query = "insert into tasks (number_plate, title, description, date, hours, mechanic) values ('"+number_plate+"','"+title+"','"+description+"','"+date+"','"+hours+"','"+mechanic+"'); " ;
     	Statement stmt = datasource.getConnection().createStatement();
     	
     	System.out.println(query);
@@ -278,7 +279,7 @@ public boolean clientExists(String number_plate) throws SQLException{
       	 
       	  Statement stmt = null;
       	    String query = "create table clients (  first_name varchar(50) not null, last_name varchar(50) not null, number_plate varchar(15) not null primary key); ";
-      	    String query2 = "create table tasks ( id int primary key, mechanic varchar(50) not null references users(username) ON DELETE CASCADE, number_plate varchar(15) not null references clients(number_plate) ON DELETE CASCADE, description text not null, title text not null, hours int not null, date Time not null);";
+      	    String query2 = "create table tasks ( id SERIAL primary key, mechanic varchar(50) not null references users(username) ON DELETE CASCADE, number_plate varchar(15) not null references clients(number_plate) ON DELETE CASCADE, description text not null, title text not null, hours int not null, date date not null);";
       	    String calendar = "create table calendar ( day date, work_day boolean, username varchar(50) not null REFERENCES users(username) );";
       	    String calendar_hours = "create table calendar_hours ( fromT Time not null, toT Time not  null, day date not null, username varchar(50) not null REFERENCES users(username) );";
 
