@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import model.Client;
+import model.Log;
 import model.Report;
 import model.Task;
 import model.User;
@@ -62,6 +63,28 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private DataSource datasource;
 
     
+    
+    public List<Log> getAllLogs() throws SQLException{
+    	List<Log> logs = new LinkedList<>();
+    	String query = "select time, action from logs";
+      	
+		Statement stmt = datasource.getConnection().createStatement();
+		ResultSet rs = stmt.executeQuery(query);
+		while(rs.next()) {
+			logs.add( new Log(rs.getString(1), rs.getString(2))  );
+		
+		}
+		
+		stmt.close();
+		System.out.println(logs);
+	
+		
+    	return logs;
+    }
+    
+    
+    
+    
     /**
      * Logowanie wykonanej czynnosci wraz z czasem
      * @param action - opis wykonanej czynnosci
@@ -71,6 +94,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     	
     	
     	Statement stmt = datasource.getConnection().createStatement();
+    	action = action.replace("'", "").replace("\"", "").replaceAll("[^a-zA-Z0-9]", "");
+    	
 		String query = "INSERT INTO LOGS (time,action) values (current_timestamp, '"+action+"');";
 
     	System.out.println(query);
@@ -309,7 +334,7 @@ public boolean clientExists(String number_plate) throws SQLException{
         stmt.executeUpdate(query);
         stmt.close();
         
-        logAction("Dodanie zadania "+number_plate+"','"+title+"','"+description+"','"+date+"','"+hours+"',' dla "+mechanic);
+        logAction("Dodanie zadania "+number_plate+","+title+","+description+","+date+","+hours+", dla "+mechanic);
     }
     
     public void insertUserIntoDatabase(User user) throws SQLException{
@@ -336,7 +361,7 @@ public boolean clientExists(String number_plate) throws SQLException{
      stmt = datasource.getConnection().createStatement();
      stmt.executeUpdate(query);
      stmt.close();		
-     logAction("Dodanie klienta '" + first_name + "', '"+ last_name + "' ,'" + number_plate);
+     logAction("Dodanie klienta " + first_name + ", "+ last_name + " ," + number_plate);
 	}
     
     @Override
