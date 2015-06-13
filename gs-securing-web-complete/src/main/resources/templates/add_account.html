@@ -104,18 +104,15 @@
 								alert('Wybierz stanowisko nowego pracownika');
 								return;
 							}
-							if ($('input[name="first_name"]').val().search(
-									/[^a-zA-ZęóąśłżźćńĘÓĄŚŁŻŹĆŃ]+/) === 0) {
+							if ($('input[name="first_name"]').val().search(/[^a-zA-ZęóąśłżźćńĘÓĄŚŁŻŹĆŃ]+/) === 0) {
 								alert('Imię powinno składać się z samych liter!');
 								return;
 							}
-							if ($('input[name="last_name"]').val().search(
-									/[^a-zA-ZęóąśłżźćńĘÓĄŚŁŻŹĆŃ]+/) === 0) {
+							if ($('input[name="last_name"]').val().search(/[^a-zA-ZęóąśłżźćńĘÓĄŚŁŻŹĆŃ\-]+/) === 0) {
 								alert('Nazwisko powinno składać się z samych liter!');
 								return;
 							}
-							if ($('input[name="password"]').val().search(
-									/^(?=.*\d)(?=.*[A-Z])[0-9a-zA-Z]{5,}$/) === -1) {
+							if ($('input[name="password"]').val().search(/^(?=.*\d)(?=.*[A-Z])[0-9a-zA-Z]{5,}$/) === -1) {
 								alert('Hasło musi zawierać co najmniej jedną cyfrę, jedną wielką literę i mieć minimum 5 liter!');
 								return;
 							}

@@ -30,7 +30,7 @@
 		</div>
 		<div class="col-md-12 column">
 		
-		<form action="/client_create" method="post">
+		<form id="newClientForm" action="/client_create" method="post">
 			<table class="table">
 				<tbody>
 					<tr class="active">
@@ -51,19 +51,42 @@
 				</tbody>
 			</table>
 			<div class="col-md-12 column">
-					 <button type="submit" class="btn btn-success">Dodaj nowego klienta</button>
+					 <button type="submit" class="btn btn-success" id="addWorkerButton">Dodaj nowego klienta</button>
 			</div>
 				
 			</form>
 			
 			<div class="row clearfix">
 				<div class="col-md-12 column">
-					 <a href="main" style="text-decoration: none"><button type="button" class="btn btn-danger">Anuluj dodawania pracownika</button></a>
+					 <a href="main" style="text-decoration: none"><button type="button" class="btn btn-danger">Anuluj dodawania klienta</button></a>
 				</div>
 			</div>
 		</div>
 	</div>
 </div>
+
+	<script>
+		$('#addWorkerButton')
+				.click(
+						function(event) {
+							event.preventDefault();
+
+							if ($('input[name="first_name"]').val().search(/[^a-zA-ZęóąśłżźćńĘÓĄŚŁŻŹĆŃ]+/) === 0) {
+							alert('Imię powinno składać się z samych liter!');
+							return;
+							}
+							if ($('input[name="last_name"]').val().search(/[^a-zA-ZęóąśłżźćńĘÓĄŚŁŻŹĆŃ\-]+/) === 0) {
+								alert('Nazwisko powinno składać się z samych liter!');
+								return;
+							}
+							if ($('input[name="number_plate"]').val().search(/[^A-Z0-9]+/) === 0) {
+							alert('Numer Tablicy rejestarcyjnej zawiera same wielkie litery i cyfry!');
+							return;
+						}
+							$('#newClientForm').submit();
+
+						});
+	</script>
         
     </body>
 </html>

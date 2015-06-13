@@ -62,6 +62,24 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private DataSource datasource;
 
     
+    /**
+     * Logowanie wykonanej czynnosci wraz z czasem
+     * @param action - opis wykonanej czynnosci
+     * @throws SQLException
+     */
+    public void logAction(String action) throws SQLException{
+    	
+    	
+    	Statement stmt = datasource.getConnection().createStatement();
+		String query = "INSERT INTO LOGS (time,action) values (current_timestamp, '"+action+"');";
+
+    	System.out.println(query);
+    	stmt = datasource.getConnection().createStatement();
+        stmt.executeUpdate(query);
+    	stmt.close();
+    	
+    }
+    
     public List<Client> listOfClients() throws SQLException{
     	List<Client> clients = new LinkedList<>();
     	String query = "select first_name, last_name, number_plate from clients";
@@ -75,6 +93,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		
 		stmt.close();
 		System.out.println(clients);
+		
+		logAction("Pobranie listy klientow");
+		
     	return clients;
     }
     
@@ -92,6 +113,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 			
 		stmt.close();
 		System.out.println(tasks);
+		logAction("Pobranie listy zadań "+mechanicUsername);
     	return tasks;
     }
     
@@ -108,11 +130,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 			Client client =  new Client(rs.getString(11), rs.getString(12), rs.getString(2));
 			Report report = new Report(client, task, rs.getDouble(8) +  rs.getDouble(9));
 			tasks.add(report);
-			
 		}
 			
 		stmt.close();
 		System.out.println(tasks);
+		logAction("Pobranie raportu");
     	return tasks;
     }
     
@@ -128,6 +150,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     	stmt = datasource.getConnection().createStatement();
         stmt.executeUpdate(query);
         stmt.close();
+        logAction("Aktualizacja zadania "+taskid+" : repair_costs = "+repairCost+", parts_costs = "+partsCosts);
+        
     }
     
     
@@ -228,7 +252,7 @@ public boolean clientExists(String number_plate) throws SQLException{
         stmt.close();
     	return calendar;
     }
-    
+
     public void insertCalendarIntoDatabase(String day, boolean work_day,  String username) throws SQLException{
     
     	String query = "insert into calendar values (' " + day + "',"+ work_day + ",'" + username+"'); " ;
@@ -247,6 +271,9 @@ public boolean clientExists(String number_plate) throws SQLException{
     	stmt = datasource.getConnection().createStatement();
         stmt.executeUpdate(query);
         stmt.close();
+        
+        
+        logAction("Ustaawienie dnia pracy "+ username + " na " +work_day);
     }
     
     public void insertCalendarHoursIntoDatabase(String from, String to, String day, String username) throws SQLException{
@@ -267,6 +294,8 @@ public boolean clientExists(String number_plate) throws SQLException{
     	stmt = datasource.getConnection().createStatement();
         stmt.executeUpdate(query);
         stmt.close();
+        
+        logAction("Zaaktualizowanie dnia "+day+" + pracy dla "+ username + " na "+from+"-"+to);
     }
     
     public void insertTaskToDb(String number_plate, String title, String description, String mechanic, String date, int hours) throws SQLException{
@@ -279,6 +308,8 @@ public boolean clientExists(String number_plate) throws SQLException{
     	stmt = datasource.getConnection().createStatement();
         stmt.executeUpdate(query);
         stmt.close();
+        
+        logAction("Dodanie zadania "+number_plate+"','"+title+"','"+description+"','"+date+"','"+hours+"',' dla "+mechanic);
     }
     
     public void insertUserIntoDatabase(User user) throws SQLException{
@@ -292,6 +323,7 @@ public boolean clientExists(String number_plate) throws SQLException{
      stmt = datasource.getConnection().createStatement();
      stmt.executeUpdate(query);
      stmt.close();
+     logAction("Rejestracja użytkownika " + user.getUsername());
     }
     
 
@@ -304,6 +336,7 @@ public boolean clientExists(String number_plate) throws SQLException{
      stmt = datasource.getConnection().createStatement();
      stmt.executeUpdate(query);
      stmt.close();		
+     logAction("Dodanie klienta '" + first_name + "', '"+ last_name + "' ,'" + number_plate);
 	}
     
     @Override
@@ -337,7 +370,9 @@ public boolean clientExists(String number_plate) throws SQLException{
       	    String query2 = "create table tasks ( id SERIAL primary key, mechanic varchar(50) not null references users(username) ON DELETE CASCADE, number_plate varchar(15) not null references clients(number_plate) ON DELETE CASCADE, description text not null, title text not null, hours int not null, date date not null, parts_costs float, repair_costs float, is_done boolean );";
       	    String calendar = "create table calendar ( day date, work_day boolean, username varchar(50) not null REFERENCES users(username) );";
       	    String calendar_hours = "create table calendar_hours ( fromT Time not null, toT Time not  null, day date not null, username varchar(50) not null REFERENCES users(username) );";
-
+      	    String logs = "create table logs ( time timestamp, action varchar(1024) );";
+    	    
+      	    
       	    stmt = datasource.getConnection().createStatement();
       	    stmt.executeUpdate(query);
       	    stmt.close();
@@ -350,7 +385,10 @@ public boolean clientExists(String number_plate) throws SQLException{
     	    stmt = datasource.getConnection().createStatement();
     	    stmt.executeUpdate(calendar_hours);
     	    stmt.close();
-    	    System.out.println("Utworzylem tabele clients, tasks, calendar, calendar_hours");
+    	    stmt = datasource.getConnection().createStatement();
+    	    stmt.executeUpdate(logs);
+    	    stmt.close();
+    	    System.out.println("Utworzylem tabele clients, tasks, calendar, calendar_hours i logs");
       	}
       	else
       	{	
@@ -390,8 +428,9 @@ public boolean clientExists(String number_plate) throws SQLException{
             
             insertUserIntoDatabase(new User("Janina", "Mistrzowska", "sekretarka", encoder.encode("12345Q"), new SimpleGrantedAuthority("Sekretarka")));
             insertUserIntoDatabase(new User("Paweł", "Pracowity", "mechanik", encoder.encode("12345Q"), new SimpleGrantedAuthority("Mechanik")));
-            insertUserIntoDatabase(new User("Anna", "Pieniężna", "ksiegowa", encoder.encode("12345Q"), new SimpleGrantedAuthority("Ksiegowa")));
-          
+            insertUserIntoDatabase(new User("Anna", "Pieniężna", "ksiegowa", encoder.encode("12345Q"), new SimpleGrantedAuthority("Księgowa")));
+         
+            logAction("Reset użytkowników systemu");
         }
     }
 
