@@ -1,5 +1,6 @@
 package hello;
 
+import java.security.Principal;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.sql.Time;
@@ -84,10 +85,11 @@ public class CalendarController {
     		@RequestParam("taskid") Integer taskid,
     		@RequestParam("repairs_costs") Double repairCost,
     		@RequestParam("parts_costs") Double partsCosts,
-    		@RequestParam("description") String description
+    		@RequestParam("description") String description,
+    		Principal principal
     		) throws SQLException {
   
-    	ob.updateTask(taskid, repairCost, partsCosts, description);
+    	ob.updateTask(taskid, repairCost, partsCosts, description, principal.getName());
     	
         return "/mechanic";
     }	

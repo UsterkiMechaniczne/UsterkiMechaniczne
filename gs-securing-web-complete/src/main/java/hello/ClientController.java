@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.List;
 
 import model.Client;
+import model.Log;
 import model.User;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,10 @@ public class ClientController {
 	@Autowired
 	WebSecurityConfig ob;
 	
+	@RequestMapping(value = "/logs", method = RequestMethod.GET)
+    public @ResponseBody List<Log> logs() throws SQLException {	
+        return ob.getAllLogs();
+    }
 
 	@RequestMapping(value = "/client_list", method = RequestMethod.GET)
     public @ResponseBody List<Client> listOfClients() throws SQLException {	
