@@ -66,7 +66,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     
     public List<Log> getAllLogs() throws SQLException{
     	List<Log> logs = new LinkedList<>();
-    	String query = "select time, action from logs";
+    	String query = "select time, action from logs order by time desc";
       	
 		Statement stmt = datasource.getConnection().createStatement();
 		ResultSet rs = stmt.executeQuery(query);
@@ -94,7 +94,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     	
     	
     	Statement stmt = datasource.getConnection().createStatement();
-    	action = action.replace("'", "").replace("\"", "").replaceAll("[^a-zA-Z0-9]", "");
+    	action = action.replace("'", "").replace("\"", "").replaceAll("[^a-zA-Z0-9ęóąśłżźćńĘÓĄŚŁŻŹĆŃ ]", "");
     	
 		String query = "INSERT INTO LOGS (time,action) values (current_timestamp, '"+action+"');";
 
@@ -165,7 +165,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     
     
     
-    public void updateTask(int taskid, double repairCost, double partsCosts, String description) throws SQLException{
+    public void updateTask(int taskid, double repairCost, double partsCosts, String description, String nameOfMechanic) throws SQLException{
         
     	String query = "update tasks set is_done=true, repair_costs = "+repairCost+", parts_costs = "+partsCosts+", description='"+description+"' where id="+taskid+"; " ;
     	System.out.println(query);
@@ -175,7 +175,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     	stmt = datasource.getConnection().createStatement();
         stmt.executeUpdate(query);
         stmt.close();
-        logAction("Aktualizacja zadania "+taskid+" : repair_costs = "+repairCost+", parts_costs = "+partsCosts);
+        logAction("Aktualizacja zadania "+taskid+" : repair_costs = "+repairCost+", parts_costs = "+partsCosts + " przez " + nameOfMechanic);
         
     }
     
@@ -334,7 +334,7 @@ public boolean clientExists(String number_plate) throws SQLException{
         stmt.executeUpdate(query);
         stmt.close();
         
-        logAction("Dodanie zadania "+number_plate+","+title+","+description+","+date+","+hours+", dla "+mechanic);
+        logAction("Dodanie zadania "+number_plate+" "+title+" na "+date+" ("+hours+"h) dla "+mechanic);
     }
     
     public void insertUserIntoDatabase(User user) throws SQLException{

@@ -333,19 +333,54 @@
 	<div class="tab-pane" id="panel-3">
 						
 	
+<script th:inline="javascript">
+									$(document).ready(function(){
+						$.getJSON('/logs', function(result){
+							$.each(result, function(index,logs){ 
+								$('#logs tbody').append('<tr class="warning"><td>'+logs.date+'</td><td>'+logs.action+'</td></tr>')
+							});
+							$('#logs').dataTable(
+									{
+										"sPaginationType": "simple",
+								        "language": {
+								            "lengthMenu": "Wyświetl _MENU_ wyników na każdej stronie",
+								            "zeroRecords": "Brak rekordów",
+								            "info": "Wyświetlam stronę _PAGE_ z _PAGES_",
+								            "infoEmpty": "Brak rekordów",
+								            "search": "Szukaj",
+								            "infoFiltered": "(Dostępnych _MAX_ wszystkich rekordów)"
+								        }});
 						
-	
-	
-	
+						});
+						
+					});
+			
+		</script>
+		
+
+		<!--..................................Akywnosci w systemie..........................................-->
+			<div class="container">
+				<div class="row clearfix">
+					<div id="reporttab" class="col-md-12 column">
+						<table id="logs" class="table table-hover">
+							<thead>
+								<tr>
+									<th>Czas</th>
+									<th>Aktywność</th>
+									
+								</tr>
+							</thead>
+							<tbody>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>		
+
 	
 </div>
-					
-					
-					
+								
 				</div>
-				
-				
-				
 			</div>
 		</div>
 	</div>
