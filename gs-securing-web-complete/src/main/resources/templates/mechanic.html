@@ -28,8 +28,7 @@
 	<div class="container">
 		<div class="row clearfix">
 			<div class="col-md-6 column">
-				<h3 class="text-left text-primary" th:inline="text">Panel
-					Mechanika: [[${#httpServletRequest.remoteUser}]]</h3>
+				<h3 class="text-left text-primary" th:inline="text">Panel Mechanika: [[${#httpServletRequest.remoteUser}]]</h3>
 			</div>
 
 			<div class="col-md-6 column">
@@ -121,6 +120,20 @@
 		<!--..............................................................................................-->
 
 		<!--..................................Aktywne zadania mechanika..........................................-->
+		
+		<div class="container">
+			<div class="row clearfix">
+				<div class="col-md-12 column">
+					<div class="tabbable" id="tabs-870073">
+						
+						<ul class="nav nav-tabs">
+							<li class="active"><a href="#panel-493160" data-toggle="tab">Zgłoszenia do realizacji</a></li>
+							<li><a href="#panel-712304" data-toggle="tab">Wyszukaj zlecenie</a></li>
+						</ul>
+						
+		<!--.................       Sekcja reazizowania zgłoszeń         ......................-->	
+						<div class="tab-content">
+							<div class="tab-pane active" id="panel-493160">
 		<form id="task-form" method="POST" action="/task_update">
 			<div class="container">
 				<div class="row clearfix">
@@ -180,6 +193,65 @@
 
 		</form>
 
+	</div>
+
+	
+								<!--.......................................Sekcja wyszukiwarka..............................................................-->
+							<div class="tab-pane" id="panel-712304">
+								<div class="container">
+									<div class="row clearfix">
+										<div id="reporttab" class="col-md-12 column">
+											<table id="fullTable" class="table table-hover">
+												<thead>
+													<tr>
+
+														<th>Nr. Rej.</th>
+														<th>Klient</th>
+														<th>Tytuł</th>
+														<th>Opis</th>
+														<th>Godziny</th>
+														<th>Data</th>
+														<th>Mechanik</th>
+														<th>Status</th>
+													</tr>
+												</thead>
+												<tbody>
+												</tbody>
+											</table>
+										</div>
+									</div>
+								</div>
+								<script>
+							
+							$(document).ready(function(){
+								$.getJSON('/report_full', function(result){
+									$.each(result, function(index,report){ 
+										$('#fullTable tbody').append('<tr class="warning"><td>'+report.client.numberPlate+'</td><td>'+
+												report.client.firstName + " " + report.client.lastName+'</td><td>'+report.task.title+'</td><td>'+report.task.description+'</td><td>'+report.task.hours+'</td><td>'+report.task.date+'</td><td>'+report.task.mechanic+'</td><td>'+(report.task.isDone ? 'Zrealizowano' : 'W trakcie')+'</td></tr>')
+									});
+									$('#fullTable').dataTable(
+											{
+												"sPaginationType": "simple",
+										        "language": {
+										            "lengthMenu": "Wyświetl _MENU_ wyników na każdej stronie",
+										            "zeroRecords": "Brak rekordów",
+										            "info": "Wyświetlam stronę _PAGE_ z _PAGES_",
+										            "infoEmpty": "Brak rekordów",
+										            "search": "Szukaj",
+										            "infoFiltered": "(Dostępnych _MAX_ wszystkich rekordów)"
+										        }});
+								});
+								
+							});
+							</script>
+							</div>
+	
+	
+	</div>
+	</div>
+	</div>
+	</div>
+	</div>
 	</div>
 
 </body>
