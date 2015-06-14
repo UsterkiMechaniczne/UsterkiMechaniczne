@@ -100,15 +100,17 @@
 						function(event) {
 							event.preventDefault();
 
+							var letters = new RegExp("^[a-zA-ZęóąśłżźćńĘÓĄŚŁŻŹĆŃ]+$");
+							
 							if ($('input[name="authority"]:checked').length == 0) {
 								alert('Wybierz stanowisko nowego pracownika');
 								return;
 							}
-							if ($('input[name="first_name"]').val().search(/[^a-zA-ZęóąśłżźćńĘÓĄŚŁŻŹĆŃ]+/) === 0) {
+							if ( letters.test($('input[name="first_name"]').val()) == false ) {
 								alert('Imię powinno składać się z samych liter!');
 								return;
 							}
-							if ($('input[name="last_name"]').val().search(/[^a-zA-ZęóąśłżźćńĘÓĄŚŁŻŹĆŃ\-]+/) === 0) {
+							if ( letters.test($('input[name="last_name"]').val()) == false ) {
 								alert('Nazwisko powinno składać się z samych liter!');
 								return;
 							}

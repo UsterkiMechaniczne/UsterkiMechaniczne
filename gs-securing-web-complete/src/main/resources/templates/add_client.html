@@ -70,16 +70,19 @@
 				.click(
 						function(event) {
 							event.preventDefault();
-
-							if ($('input[name="first_name"]').val().search(/[^a-zA-ZęóąśłżźćńĘÓĄŚŁŻŹĆŃ]+/) === 0) {
+							
+							var letters = new RegExp("^[a-zA-ZęóąśłżźćńĘÓĄŚŁŻŹĆŃ]+$");
+							var plate = new RegExp("^[A-Z0-9]+$");
+							
+							if ( letters.test($('input[name="first_name"]').val()) == false ) {
 							alert('Imię powinno składać się z samych liter!');
 							return;
 							}
-							if ($('input[name="last_name"]').val().search(/[^a-zA-ZęóąśłżźćńĘÓĄŚŁŻŹĆŃ\-]+/) === 0) {
+							if ( letters.test($('input[name="last_name"]').val()) == false ) {
 								alert('Nazwisko powinno składać się z samych liter!');
 								return;
 							}
-							if ($('input[name="number_plate"]').val().search(/[^A-Z0-9]+/) === 0) {
+							if (plate.test($('input[name="number_plate"]').val()) == false ) {
 							alert('Numer Tablicy rejestarcyjnej zawiera same wielkie litery i cyfry!');
 							return;
 						}
